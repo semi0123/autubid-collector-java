@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.emforce.wonderbox.dao.CollectorTestDao">
+	
+	<sql id="allColumn">
+		id, name, created_at, updated_at
+	</sql>
+	
+	<select id="select" parameterType="HashMap" resultType="CollectorTest">
+		SELECT <include refid="allColumn"/>
+		  FROM collector_test
+		 <where>
+			 <if test="name != null">
+			 	name like CONCAT('%',#{name},'%')
+			 </if>
+		 </where>
+	</select>
+	
+	<insert id="insert" parameterType="CollectorTest" useGeneratedKeys="true"  keyProperty="id" keyColumn="id">
+		INSERT INTO collector_test(name)
+			 VALUES(#{name})
+	</insert>
+	
+	<update id="update" parameterType="CollectorTest">
+		UPDATE collector_test
+		   SET name = #{name},
+		   	   updated_at = now()
+		 WHERE id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="CollectorTest">
+		DELETE 
+		  FROM collector_test
+		 WHERE id = #{id}
+	</delete>
+
+</mapper>

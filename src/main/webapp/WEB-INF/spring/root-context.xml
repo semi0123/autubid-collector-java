@@ -32,13 +32,13 @@
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
-		<property name="typeAliasesPackage" value="kr.co.emforce.wonderbox"/>
+		<property name="typeAliasesPackage" value="kr.co.emforce.wonderbox.model"/>
 		<property name="mapperLocations" value="classpath:mapper/*.xml" />
 		
 	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-		<property name="basePackage" value="kr.co.emforce.wonderbox" />
+		<property name="basePackage" value="kr.co.emforce.wonderbox.dao" />
 	</bean>
 	
 	<!-- Transaction -->
