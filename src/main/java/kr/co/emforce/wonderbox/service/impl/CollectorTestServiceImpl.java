@@ -30,6 +30,7 @@ public class CollectorTestServiceImpl implements CollectorTestService{
 		
 		for(CollectorTest ct : ctList){
 			count += ctDao.insert(ct);
+			System.out.println("생성 된 Auto Increment Id : " + ct.getId());
 		}
 		
 		return count;

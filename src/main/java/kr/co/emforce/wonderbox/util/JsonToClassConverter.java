@@ -34,7 +34,6 @@ public class JsonToClassConverter {
 				clazz = clz.newInstance();
 				method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key)) );
 				method.invoke(clazz, json.get(key));
-				System.out.println(clazz);
 			}
 			convertedList.add(clazz);
 		}

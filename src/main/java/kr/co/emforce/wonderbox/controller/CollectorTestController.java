@@ -49,14 +49,8 @@ public class CollectorTestController {
 		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
 		List<Map<String, Object>> ctList = (ArrayList<Map<String, Object>>) requestBody.get("collectors");
 		try{
-			JsonToClassConverter.convert(ctList, CollectorTest.class);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		try{
 			returnMap.put("status", Boolean.TRUE);
-//			returnMap.put("count_by_inserted", ctService.insert(ctList));
+			returnMap.put("count_by_inserted", ctService.insert(JsonToClassConverter.convert(ctList, CollectorTest.class)));
 		}catch(Exception e){
 			e.printStackTrace();
 			returnMap.put("status", Boolean.FALSE);
