@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.emforce.wonderbox.dao.CrawlingDao">
+
+	<select id="selectKwdNmAndTargetFromBidFavoriteKeywords" parameterType="Map" resultType="HashMap">
+		SELECT kwd_nm, target, process_num
+		  FROM bid_favorite_keywords
+	   <where>
+	   	  <if test="bid_status">
+	   	    bid_status = #{bid_status}
+	   	  </if>
+		  <if test="process_num != null">
+			AND process_num = #{process_num}
+		  </if>
+		  <if test="target != null">
+		  	AND target = #{target}
+		  </if>
+	   </where>
+	  GROUP BY kwd_nm, target
+	</select>
+	
+	
+	<select id="selectStatusFromBidMachine" parameterType="Map" resultType="BidMachineMng">
+		SELECT id, created_by, updated_by, process_num, status, cur_crashed_at, cur_rerunned_at, created_at, updated_at
+		  FROM bid_machine_mngs
+		 <where>
+			<if test="status != null">
+				status = #{status}
+			</if>				 
+		 </where>
+	</select>
+	
+	<update id="updateProcessNumFromBidFavoriteKeyword" parameterType="Map">
+		UPDATE bid_favorite_keywords
+		   SET process_num = #{process_num}
+		 WHERE kwd_nm = #{kwd_nm}
+		  	   AND
+		  	   target = #{target}
+	</update>
+	
+</mapper>
