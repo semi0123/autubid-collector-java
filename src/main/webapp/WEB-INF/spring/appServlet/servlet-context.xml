@@ -13,6 +13,9 @@
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<context:component-scan base-package="kr.co.emforce.wonderbox.controller" />
+	
+	<resources mapping="/static/**" location="/static/" />
+	
 	<annotation-driven />
 	
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
@@ -37,5 +40,13 @@
         <beans:property name="maxUploadSize" value="100000000" />
         <beans:property name="maxInMemorySize" value="100000000" />
     </beans:bean>
+    
+    <interceptors>
+    	<interceptor>
+    		<mapping path="/**"/>
+    		<exclude-mapping path="/static/**"/>
+    		<beans:bean class="kr.co.emforce.wonderbox.interceptor.CollectorTestInterceptor"/>
+    	</interceptor>
+    </interceptors>
 	
 </beans:beans>

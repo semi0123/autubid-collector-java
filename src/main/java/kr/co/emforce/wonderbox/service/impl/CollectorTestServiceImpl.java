@@ -5,16 +5,20 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.emforce.wonderbox.dao.CollectorTestDao;
+import kr.co.emforce.wonderbox.exception.NumberOfQueryExecutionResultZeroException;
 import kr.co.emforce.wonderbox.model.CollectorTest;
 import kr.co.emforce.wonderbox.service.CollectorTestService;
 
 @Service
 public class CollectorTestServiceImpl implements CollectorTestService{
 
+	private static Logger log = Logger.getLogger(CollectorTestServiceImpl.class);
+	
 	@Inject
 	CollectorTestDao ctDao;
 	
@@ -30,22 +34,40 @@ public class CollectorTestServiceImpl implements CollectorTestService{
 		
 		for(CollectorTest ct : ctList){
 			count += ctDao.insert(ct);
-			System.out.println("생성 된 Auto Increment Id : " + ct.getId());
+			log.info("생성 된 Auto Increment Id : " + ct.getId());
 		}
+		
+		if( count == 0 ) throw new NumberOfQueryExecutionResultZeroException();
 		
 		return count;
 	}
 
 	@Override
-	public int update(CollectorTest ct) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	@Transactional(rollbackFor=Exception.class)
+	public int update(List<CollectorTest> ctList) throws Exception {
+		int count = 0;
+		
+		for(CollectorTest ct : ctList){
+			count += ctDao.update(ct);
+		}
+		
+		if( count == 0 ) throw new NumberOfQueryExecutionResultZeroException();
+
+		return count;
 	}
 
 	@Override
-	public int delete(CollectorTest ct) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	@Transactional(rollbackFor=Exception.class)
+	public int delete(List<CollectorTest> ctList) throws Exception {
+		int count = 0;
+		
+		for(CollectorTest ct : ctList){
+			count += ctDao.delete(ct);
+		}
+		
+		if( count == 0 ) throw new NumberOfQueryExecutionResultZeroException();
+
+		return count;
 	}
 
 }

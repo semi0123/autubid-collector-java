@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +23,10 @@ import kr.co.emforce.wonderbox.util.JsonToClassConverter;
 
 @Controller
 @CrossOrigin(origins="*")
-@RequestMapping("/test")
+@RequestMapping("/collector_test")
 public class CollectorTestController {
+	
+	private static final Logger log = Logger.getLogger(CollectorTestController.class);
 	
 	@Inject
 	CollectorTestService ctService;
@@ -47,10 +50,10 @@ public class CollectorTestController {
 	public Object post(
 			@RequestBody Map<String, Object> requestBody){
 		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
-		List<Map<String, Object>> ctList = (ArrayList<Map<String, Object>>) requestBody.get("collectors");
+		List<Map<String, Object>> collectorList = (ArrayList<Map<String, Object>>) requestBody.get("collectors");
 		try{
 			returnMap.put("status", Boolean.TRUE);
-			returnMap.put("count_by_inserted", ctService.insert(JsonToClassConverter.convert(ctList, CollectorTest.class)));
+			returnMap.put("number_of_result", ctService.insert(JsonToClassConverter.convert(collectorList, CollectorTest.class)));
 		}catch(Exception e){
 			e.printStackTrace();
 			returnMap.put("status", Boolean.FALSE);
@@ -59,5 +62,38 @@ public class CollectorTestController {
 		return returnMap;
 	}
 	
+	@RequestMapping(value="/", method=RequestMethod.PUT, headers = {"content-type=application/json"})
+	@ResponseBody
+	public Object put(
+			@RequestBody Map<String, Object> requestBody){
+		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
+		List<Map<String, Object>> collectorList = (ArrayList<Map<String, Object>>) requestBody.get("collectors");
+		try{
+			returnMap.put("status", Boolean.TRUE);
+			returnMap.put("number_of_result", ctService.update(JsonToClassConverter.convert(collectorList, CollectorTest.class)));
+		}catch(Exception e){
+			e.printStackTrace();
+			returnMap.put("status", Boolean.FALSE);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
+	}
+	
+	@RequestMapping(value="/", method=RequestMethod.DELETE, headers = {"content-type=application/json"})
+	@ResponseBody
+	public Object delete(
+			@RequestBody Map<String, Object> requestBody){
+		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
+		List<Map<String, Object>> collectorList = (ArrayList<Map<String, Object>>) requestBody.get("collectors");
+		try{
+			returnMap.put("status", Boolean.TRUE);
+			returnMap.put("number_of_result", ctService.delete(JsonToClassConverter.convert(collectorList, CollectorTest.class)));
+		}catch(Exception e){
+			e.printStackTrace();
+			returnMap.put("status", Boolean.FALSE);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
+	}
 	
 }

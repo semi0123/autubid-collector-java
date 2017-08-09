@@ -11,7 +11,7 @@ public interface CollectorTestService {
 	
 	public int insert(List<CollectorTest> ctList) throws Exception;
 	
-	public int update(CollectorTest ct) throws Exception;
+	public int update(List<CollectorTest> ctList) throws Exception;
 	
-	public int delete(CollectorTest ct) throws Exception;
+	public int delete(List<CollectorTest> ctList) throws Exception;
 }
