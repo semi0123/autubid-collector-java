@@ -7,6 +7,20 @@
 	<name>a3tio-ad-collector</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
+	
+	<profiles>
+		<profile>
+			<id>production</id>
+			<properties>
+				<ftp.server>192.168.0.1</ftp.server>
+				<ftp.userid>userid</ftp.userid>
+				<ftp.password>password</ftp.password>
+				<webremotedir>/www/web/path</webremotedir>
+				<wasremotedir>/www/was/path</wasremotedir>
+			</properties>
+		</profile>
+	</profiles>
+	
 	<properties>
 		<java-version>1.8</java-version>
 		<org.springframework-version>4.3.4.RELEASE</org.springframework-version>
@@ -207,6 +221,12 @@
 		       
 	</dependencies>
     <build>
+	    <finalName>a3tio-ad-collector</finalName>
+    	<resources>
+    		<resource>
+    			<directory>src/main/resources</directory>
+    		</resource>
+    	</resources>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -227,12 +247,151 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
+            </plugin>
+            <plugin>
+            	<groupId>org.apache.maven.plugins</groupId>
+            	<artifactId>maven-war-plugin</artifactId>
+            	<version>2.6</version>
+            	<configuration>
+            		<includeEmptyDirectories>true</includeEmptyDirectories>
+            		<!--packagingExcludes>img/**</packagingExcludes-->
+            	</configuration>
+            </plugin>
+            <plugin>
+            	<artifactId>maven-antrun-plugin</artifactId>
+            	<version>1.8</version>
+            	<executions>
+            		<execution>
+            			<id>send web</id>
+            			<phase>install</phase>
+            			<configuration>
+            				<tasks>
+            					<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
+            					<if>
+            						<equals arg1="${send.web}" arg2="true"/>
+            						<then>
+            							<echo message="############################## send web[${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${webremotedir}">
+            								<fileset dir="src/main/webapp">
+            									<include name="static/**"/>
+            								</fileset>
+            							</ftp>
+            						</then>
+            					</if>
+            				</tasks>
+            			</configuration>
+            			<goals>
+           					<goal>run</goal>
+           				</goals>
+            		</execution>
+            		<execution>
+            			<id>send was</id>
+            			<phase>install</phase>
+            			<configuration>
+            				<tasks>
+            					<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath"/>
+            					<if>
+            						<equals arg1="${send.jsp}" arg2="true"/>
+            						<then>
+            							<echo message="############################## send jsp[${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${wasremotedir}">
+            								<fileset dir="target/a3tio-ad-collector">
+            									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
+            									<include name="WEB-INF/views/**/*"/>
+            									<include name="*.jsp"/>
+            								</fileset>
+            							</ftp>
+            						</then>
+            					</if>
+            				
+            					<if>
+            						<equals arg1="${send.class}" arg2="true"/>
+            						<then>
+            							<echo message="############################## send class[${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${wasremotedir}">
+            								<fileset dir="target/a3tio-ad-collector">
+            									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
+            									<include name="WEB-INF/classes/**/*"/>
+            									<exclude name="WEB-INF/classes/log4j.xml"/>
+            								</fileset>
+            							</ftp>
+            						</then>
+            					</if>
+            					
+            					<if>
+            						<equals arg1="${send.environment}" arg2="true"/>
+            						<then>
+            							<echo message="############################## send environment[${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${wasremotedir}">
+            								<fileset dir="target/a3tio-ad-collector">
+            									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
+            									<include name="WEB-INF/spring/**/*"/>
+            									<include name="WEB-INF/*.xml"/>
+            								</fileset>
+            							</ftp>
+            						</then>
+            					</if>
+            				
+            					<if>
+            						<equals arg1="${send.first}" arg2="true"/>
+            						<then>
+            							<echo message="############################## send first was [${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${wasremotedir}">
+            								<fileset dir="target/a3tio-ad-collector">
+            									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
+            									<include name="WEB-INF/**/*"/>
+            									<include name="*.jsp"/>
+            								</fileset>
+            							</ftp>
+            							<echo message="############################## send first web [${ftp.server}] source upload ##############################"/>
+            							<ftp password="${ftp.password}" server="${ftp.server}" userid="${ftp.userid}" remotedir="${webremotedir}">
+            								<fileset dir="src/main/webapp">
+    	       									<include name="static/**"/>
+	           								</fileset>
+            							</ftp>
+            						</then>
+            					</if>
+            				</tasks>
+            			</configuration>
+            			<goals>
+           					<goal>run</goal>
+           				</goals>
+            		</execution>
+            	</executions>
+            	<dependencies>
+            		<dependency>
+            			<groupId>commons-net</groupId>
+            			<artifactId>commons-net</artifactId>
+            			<version>1.4.1</version>
+            		</dependency>
+            		<dependency>
+            			<groupId>ant</groupId>
+            			<artifactId>ant-commons-net</artifactId>
+            			<version>1.6.5</version>
+            		</dependency>
+            		<dependency>
+            			<groupId>ant-contrib</groupId>
+            			<artifactId>ant-contrib</artifactId>
+            			<version>1.0b3</version>
+            			<exclusions>
+            				<exclusion>
+            					<groupId>ant</groupId>
+            					<artifactId>ant</artifactId>
+            				</exclusion>
+            			</exclusions>
+            		</dependency>
+            		<dependency>
+            			<groupId>org.apache.ant</groupId>
+            			<artifactId>ant-nodeps</artifactId>
+            			<version>1.8.1</version>
+            		</dependency>
+            	</dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
