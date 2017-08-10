@@ -2,6 +2,7 @@ package kr.co.emforce.wonderbox.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,8 +74,17 @@ public class CrawlingController {
 	
 	@RequestMapping(value="/directRelocate/")
 	@ResponseBody
-	public void directRelocate(){
-		crawlingService.directChangeProcessNum();
+	public Object directRelocate(HttpServletRequest request){
+		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
+		try{
+			log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> Direct Relocate Process Num");
+			crawlingService.directChangeProcessNum();
+			returnMap.put("status", Boolean.TRUE);
+		}catch(Exception e){
+			returnMap.put("status", Boolean.FALSE);
+			returnMap.put("msg", e.getMessage());
+		}
+		return returnMap;
 	}
 	
 	

@@ -18,10 +18,10 @@ public class CollectorTestInterceptor extends HandlerInterceptorAdapter  {
 		boolean bool = true;
 		
 		if( bool ){
-			log.info("Interceptor True");
+//			log.info("Interceptor True");
 			return true; //통과
 		}else{
-			log.info("Interceptor False");
+//			log.info("Interceptor False");
 			return false;
 		}
 	}

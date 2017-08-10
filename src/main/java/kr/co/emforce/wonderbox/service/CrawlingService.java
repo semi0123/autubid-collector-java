@@ -8,5 +8,7 @@ public interface CrawlingService {
 	
 	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap);
 	
-	public void directChangeProcessNum();
+	public void directChangeProcessNum() throws Exception;
+	
+	
 }
