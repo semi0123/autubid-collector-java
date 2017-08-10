@@ -22,6 +22,35 @@
 	  GROUP BY kwd_nm, target
 	</select>
 	
+	<select id="selectOneForBidAmtChangeModule" parameterType="String" resultType="HashMap">
+		SELECT bf.advs_id adv_id, bfk.kwd_id, ai.na_account_ser, bfk.goal_rank, bfk.max_bid_amt, bfk.site, bfk.emergency_status
+		  FROM bid_favorites bf,
+		       (SELECT kwd_id, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status
+		          FROM bid_favorite_keywords
+		         WHERE kwd_id = #{_parameter}) bfk,
+		       adv_infos ai
+		 WHERE bf.id = bfk.bid_favorites_id
+		       AND bf.advs_id = ai.adv_id
+	</select>
+	
+	<select id="selectAllFromBidFavoritesKeywords" parameterType="BidFavoriteKeyword" resultType="BidFavoriteKeyword">
+		SELECT *
+		  FROM bid_favorite_keywords
+		  <where>
+			<if test="kwd_nm != null">
+				AND kwd_nm = #{kwd_nm}
+			</if>		  
+			<if test="target != null">
+				AND target = #{target}
+			</if>
+			<if test="site != null">
+				AND site = #{site}
+			</if>
+			<if test="bid_status != null">
+				AND bid_status = #{bid_status}
+			</if>
+		  </where>
+	</select>
 	
 	<select id="selectStatusFromBidMachine" parameterType="Map" resultType="BidMachineMng">
 		SELECT id, created_by, updated_by, process_num, status, cur_crashed_at, cur_rerunned_at, created_at, updated_at

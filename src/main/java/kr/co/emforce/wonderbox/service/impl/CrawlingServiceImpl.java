@@ -1,5 +1,6 @@
 package kr.co.emforce.wonderbox.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,14 +14,17 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.emforce.wonderbox.dao.CrawlingDao;
+import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.BidMachineMng;
+import kr.co.emforce.wonderbox.model.CrawlingResult;
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
+import kr.co.emforce.wonderbox.util.JsonToClassConverter;
 
 @Service
 public class CrawlingServiceImpl implements CrawlingService{
@@ -36,6 +40,48 @@ public class CrawlingServiceImpl implements CrawlingService{
 	@Inject
 	private SqlSessionFactory sqlSessionFactory;
 	
+	@Override
+	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
+		return crawlingDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
+	}
+	
+	@Override
+	public void runBidModule(Map<String, Object> requestBody) {
+		
+		String kwd_nm = requestBody.get("kwd_nm").toString();
+		String target = requestBody.get("target").toString();
+		String checked_at = requestBody.get("checked_at").toString();
+		
+		Map<Object, CrawlingResult> crawlingMap = null;
+		List<BidFavoriteKeyword> activeBfkList = null;
+		Map<String, Object> joinSelectMap = null;
+		
+		try{
+			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
+			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active"));
+			for(BidFavoriteKeyword bfk : activeBfkList){
+				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
+				log.info("adv_id : " + joinSelectMap.get("adv_id"));
+				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
+				log.info("kwd_nm : " + kwd_nm);
+				log.info("target : " + target);
+				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
+				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
+				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
+				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
+				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
+				log.info("checked_at : " + checked_at);
+			}
+		}catch(Exception e){
+			log.info(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void sendCrawlingPostJsonString(Map<String, Object> requestBody) {
+		log.info(new JSONObject(requestBody).toString());
+	}
+	
 	/**
 	 * cron 사용법 
 	 * 순서별 의미 초(0~59) 분(0~59) 시(0~23) 날짜(1~31) 달(1~12) 요일(1~7) 년(1970~2099)
@@ -50,13 +96,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 	public void TestScheduler() {
 		try{ relocateProcessNum("(자동)"); }catch(Exception e){ }
 	}
-	
 	@Override
-	@Transactional(rollbackFor=Exception.class)
 	public void directChangeProcessNum() throws Exception {
 		relocateProcessNum("(수동)");
 	}
-	
 	private void relocateProcessNum(String callType) throws Exception{
 		log.info(CurrentTimeUtil.getCurrentTime() + callType + " 자동입찰 키워드 프로세스 재배정 시작");
 		
@@ -92,7 +135,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			}
 		}
 		
-		// 직접 트랜잭션 관리
+		// SqlSessionFactory를 이용한 수동 트랜잭션 관리
 		SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
 		try{
 			for(Map<String, Object> kw : kwdList){
@@ -109,11 +152,4 @@ public class CrawlingServiceImpl implements CrawlingService{
 			try{ if( sqlSession != null ) sqlSession.close(); }catch(Exception e){ }
 		}
 	}
-	
-	@Override
-	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
-		return crawlingDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
-	}
-	
-	
 }

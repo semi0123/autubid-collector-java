@@ -1,9 +1,7 @@
 package kr.co.emforce.wonderbox.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -18,14 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.co.emforce.wonderbox.model.CrawlingResult;
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
-import kr.co.emforce.wonderbox.util.JsonToClassConverter;
 
 @Controller
 @CrossOrigin(origins="*")
-@RequestMapping("/collector")
 public class CrawlingController {
 	
 	private static final Logger log = Logger.getLogger(CrawlingController.class);
@@ -41,9 +36,7 @@ public class CrawlingController {
 			@RequestParam(value="target", required=false) String target,
 			HttpServletRequest request
 		){
-		
 		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> GET process_num = " + process_num);
-		
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
 		inputMap.put("process_num", process_num);
@@ -54,6 +47,7 @@ public class CrawlingController {
 	}
 	
 	@RequestMapping(value="/crawling/", method=RequestMethod.POST)
+	@ResponseBody
 	public void post(
 			@RequestBody Map<String, Object> requestBody,
 			HttpServletRequest request
@@ -63,9 +57,10 @@ public class CrawlingController {
 		
 		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> POST kwd_nm = "+ kwd_nm + " / target = " + target);
 		
+		
 		try{
-			List<CrawlingResult> crawlingList = JsonToClassConverter.convert((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), CrawlingResult.class);
-			log.info(crawlingList);
+			crawlingService.runBidModule(requestBody);
+			crawlingService.sendCrawlingPostJsonString(requestBody);
 		}catch(Exception e){
 			log.error("Crawling Post Error!!!");
 			log.error(e.getMessage());

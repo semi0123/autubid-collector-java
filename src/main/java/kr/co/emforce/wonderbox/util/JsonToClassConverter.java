@@ -9,13 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-@SuppressWarnings("unchecked")
 public class JsonToClassConverter {
-	
-	private static final Logger log = Logger.getLogger(JsonToClassConverter.class);
-	
 	public static <T> List<T> convert(List<Map<String, Object>> jsonList, Class<T> classType) throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException{
 		Class<T> clz = (Class<T>) Class.forName(classType.getName());
 		Method method = null;
@@ -25,7 +19,6 @@ public class JsonToClassConverter {
 		for(Field field : fields){
 			fTypeMap.put(field.getName(), field.getType().getName());
 		}
-		System.out.println(fTypeMap);
 		
 		List<T> convertedList = new ArrayList<T>();
 		
@@ -68,6 +61,18 @@ public class JsonToClassConverter {
 		}
 		
 		return convertedObject;
+	}
+	
+	public static <T> Map<Object, T> convertToIdMap(List<Map<String, Object>> jsonList, String idColumnName, Class<T> classType) throws Exception{
+		Map<Object, T> returnMap = new HashMap<Object, T>();
+		List<T> convertedList = convert(jsonList, classType);
+		Class<T> clz = (Class<T>) Class.forName(classType.getName());
+		Field field = clz.getDeclaredField(idColumnName);
+		field.setAccessible(true);
+		for(T t : convertedList){
+			returnMap.put(field.get(t), t);
+		}
+		return returnMap;
 	}
 }
 
