@@ -9,8 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 @SuppressWarnings("unchecked")
 public class JsonToClassConverter {
+	
+	private static final Logger log = Logger.getLogger(JsonToClassConverter.class);
 	
 	public static <T> List<T> convert(List<Map<String, Object>> jsonList, Class<T> classType) throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException{
 		Class<T> clz = (Class<T>) Class.forName(classType.getName());
@@ -21,6 +25,7 @@ public class JsonToClassConverter {
 		for(Field field : fields){
 			fTypeMap.put(field.getName(), field.getType().getName());
 		}
+		System.out.println(fTypeMap);
 		
 		List<T> convertedList = new ArrayList<T>();
 		
@@ -30,9 +35,9 @@ public class JsonToClassConverter {
 		
 		for(Map<String, Object> json : jsonList){
 			keyIter = json.keySet().iterator();
+			clazz = clz.newInstance();
 			while( keyIter.hasNext() ){
 				key = keyIter.next();
-				clazz = clz.newInstance();
 				method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key)) );
 				method.invoke(clazz, json.get(key));
 			}
@@ -52,14 +57,12 @@ public class JsonToClassConverter {
 			fTypeMap.put(field.getName(), field.getType().getName());
 		}
 		
-		T convertedObject = null;
-		
 		Iterator<String> keyIter = json.keySet().iterator();
 		String key = null;
 		
+		T convertedObject = clz.newInstance();
 		while( keyIter.hasNext() ){
 			key = keyIter.next();
-			convertedObject = clz.newInstance();
 			method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key)) );
 			method.invoke(convertedObject, json.get(key));
 		}
