@@ -9,8 +9,13 @@
 		SELECT kwd_nm, target, process_num
 		  FROM bid_favorite_keywords
 	   <where>
+	   	  <if test="caller == 'module'">
+	      process_num IN (SELECT process_num 
+	                        FROM bid_machine_mngs 
+	                       WHERE status = 'Active')
+	   	  </if>
 	   	  <if test="bid_status">
-	   	    bid_status = #{bid_status}
+	   	    AND bid_status = #{bid_status}
 	   	  </if>
 		  <if test="process_num != null">
 			AND process_num = #{process_num}

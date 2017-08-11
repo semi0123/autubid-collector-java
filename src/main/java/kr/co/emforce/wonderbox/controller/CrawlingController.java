@@ -42,6 +42,7 @@ public class CrawlingController {
 		inputMap.put("process_num", process_num);
 		inputMap.put("bid_status", bid_status);
 		inputMap.put("target", target);
+		inputMap.put("caller", "module");
 		
 		return crawlingService.selectForCrawlingModule(inputMap);
 	}
