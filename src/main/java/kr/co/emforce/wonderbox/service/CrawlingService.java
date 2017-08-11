@@ -10,7 +10,7 @@ public interface CrawlingService {
 	
 	public void runBidModule(Map<String, Object> requestBody);
 
-	public void directChangeProcessNum() throws Exception;
+	public void directRelocateProcessNum() throws Exception;
 	
 	public void sendCrawlingPostJsonString(Map<String, Object> requestBody);
 	

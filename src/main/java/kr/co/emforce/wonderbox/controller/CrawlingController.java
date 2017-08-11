@@ -73,7 +73,7 @@ public class CrawlingController {
 		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
 		try{
 			log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> Direct Relocate Process Num");
-			crawlingService.directChangeProcessNum();
+			crawlingService.directRelocateProcessNum();
 			returnMap.put("status", Boolean.TRUE);
 		}catch(Exception e){
 			returnMap.put("status", Boolean.FALSE);

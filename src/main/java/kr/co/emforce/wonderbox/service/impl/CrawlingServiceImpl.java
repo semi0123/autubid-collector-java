@@ -15,7 +15,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import kr.co.emforce.wonderbox.dao.CrawlingDao;
@@ -67,6 +66,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				log.info("target : " + target);
 				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
 				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
+				log.info("rank_range : " + crawlingMap.size());
 				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
 				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
@@ -81,27 +81,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 	public void sendCrawlingPostJsonString(Map<String, Object> requestBody) {
 		log.info(new JSONObject(requestBody).toString());
 	}
-	
-	/**
-	 * cron 사용법 
-	 * 순서별 의미 초(0~59) 분(0~59) 시(0~23) 날짜(1~31) 달(1~12) 요일(1~7) 년(1970~2099)
-	 * 사용 예
-	 * 0 0 12 * * *       ==> 매일 12시에 실행
-	 * 0 15 10 * * *      ==> 매일 10시 15분에 실행
-	 * 0 * 14 * * *       ==> 매일 14시에 실행
-	 * 0 0/5 14 18 * * *  ==> 매일 14시, 18시에 시작해서 5분간격으로 실행
-	 * 0 0-5 14 * * *     ==> 매일 14시에 시작해서 0분동안 실행 
-	 */
-	@Scheduled(cron="0 10 0 * * *") // 0시 10분에 프로세스넘버 재배치
-	public void TestScheduler() {
-		try{ relocateProcessNum("(자동)"); }catch(Exception e){ }
-	}
+
 	@Override
-	public void directChangeProcessNum() throws Exception {
-		relocateProcessNum("(수동)");
-	}
-	private void relocateProcessNum(String callType) throws Exception{
-		log.info(CurrentTimeUtil.getCurrentTime() + callType + " 자동입찰 키워드 프로세스 재배정 시작");
+	public void directRelocateProcessNum() throws Exception {
+		log.info(CurrentTimeUtil.getCurrentTime() + "(수동) 자동입찰 키워드 프로세스 재배정 시작");
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
 		inputMap.put("status", "Active");
@@ -142,14 +125,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 				sqlSession.update(CrawlingDao.class.getName() + ".updateProcessNumFromBidFavoriteKeyword", kw);
 			}
 			sqlSession.commit();
-			log.info(CurrentTimeUtil.getCurrentTime() + callType + " 자동입찰 키워드 재배정 완료 / 업데이트 된 키워드 수 : " + totalCount);
+			log.info(CurrentTimeUtil.getCurrentTime() + "(수동) 자동입찰 키워드 재배정 완료 / 업데이트 된 키워드 수 : " + totalCount);
 		}catch(Exception e){
 			sqlSession.rollback();
 			log.error(CurrentTimeUtil.getCurrentTime() + e.getMessage());
-			log.error(CurrentTimeUtil.getCurrentTime()  + callType + " 자동입찰 키워드 재배정 실패");
+			log.error(CurrentTimeUtil.getCurrentTime()  + "(수동) 자동입찰 키워드 재배정 실패");
 			throw e;
 		}finally{
 			try{ if( sqlSession != null ) sqlSession.close(); }catch(Exception e){ }
 		}
 	}
+	
 }
