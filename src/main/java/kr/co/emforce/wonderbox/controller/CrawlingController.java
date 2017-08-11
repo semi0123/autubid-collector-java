@@ -34,6 +34,7 @@ public class CrawlingController {
 			@RequestParam(value="process_num") Integer process_num,
 			@RequestParam(value="bid_status", required=false, defaultValue="Active") String bid_status,
 			@RequestParam(value="target", required=false) String target,
+			@RequestParam(value="caller", required=false, defaultValue="module") String caller,
 			HttpServletRequest request
 		){
 		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> GET process_num = " + process_num);
@@ -42,7 +43,7 @@ public class CrawlingController {
 		inputMap.put("process_num", process_num);
 		inputMap.put("bid_status", bid_status);
 		inputMap.put("target", target);
-		inputMap.put("caller", "module");
+		inputMap.put("caller", caller);
 		
 		return crawlingService.selectForCrawlingModule(inputMap);
 	}
