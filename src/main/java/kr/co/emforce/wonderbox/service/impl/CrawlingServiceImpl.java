@@ -73,14 +73,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
 				log.info("checked_at : " + checked_at);
-				String advId = (String) joinSelectMap.get("adv_id");
-				String customerId = (String) joinSelectMap.get("na_account_ser");
-				String kwdId = (String) joinSelectMap.get("kwd_id");
-				Integer rank = crawlingMap.get(joinSelectMap.get("site")).getRank();
-				Integer rankRange = crawlingMap.size();
-				String goalRank = (String) joinSelectMap.get("goal_rank");
-				String maxBidAmt = (String) joinSelectMap.get("max_bid_amt");
-				String emergencyStatus = (String) joinSelectMap.get("emergency_status");
+				String advId = String.valueOf(joinSelectMap.get("adv_id"));
+				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
+				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
+				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
+				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
+				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
+				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
 				
 				List<String> args = new ArrayList<String>();
 				args.add(advId);
@@ -94,6 +94,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(maxBidAmt);
 				args.add(emergencyStatus);
 				
+				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
+				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
+				log.info("args => ");
+				
+			  int cnt = 0;
+			  for(String temp : args){
+			  	log.info("["+cnt+"] "+temp);
+			  	cnt++;
+			  }
 		    runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
 		}catch(Exception e){
