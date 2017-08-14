@@ -37,22 +37,18 @@ public class Main {
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
 			
+			// 5분이내에 크래쉬된 프로세스이면서 updated_at과 시간이 같은 것 셀렉트
+			ResultSet rs = stmt.executeQuery("select process_num from bid_machine_mngs where status = 'Inactive' AND date_add(now(), interval -5 minute) <= cur_crashed_at AND cur_crashed_at >= updated_at");
 			
-			
-			
-			ResultSet rs = stmt.executeQuery("select process_num from bid_machine_mngs where status = 'Inactive' AND date_add(now(), interval -5 minute) < cur_crashed_at");
-			
-			int inactiveProcessNum = 0;
-			StringBuffer crashedList = new StringBuffer();
+			List<Integer> crashedList = new ArrayList<Integer>();
 			while(rs.next()){
-				inactiveProcessNum++;
-				crashedList.append(rs.getInt(1) + " ");
+				crashedList.add(rs.getInt(1));
 			}
-			if( inactiveProcessNum == 0 ){
+			if( crashedList.size() == 0 ){
 				System.out.println(getCurrentTime() + "모든 프로세스 정상 작동 중");
 				return;
 			}
-			System.out.println(getCurrentTime() + "ProcessNum " + crashedList.toString() + "Crashed");
+			System.out.println(getCurrentTime() + "ProcessNum " + crashedList + "Crashed");
 			rs = stmt.executeQuery(activeBidMachine);
 			
 			List<Integer> activeProcessList = new ArrayList<Integer>();
@@ -106,6 +102,12 @@ public class Main {
 			}
 			int[] result = pstmt.executeBatch();
 			System.out.println(getCurrentTime() + "업데이트 된 키워드 네임 갯수 : " + result.length);
+			
+			for(int pn : crashedList){
+				System.out.println(pn);
+				stmt.executeUpdate("UPDATE bid_machine_mngs SET updated_at = now() WHERE process_num = " + pn);
+			}
+			
 			conn.commit();
 		}catch(Exception e){
 			e.printStackTrace();
