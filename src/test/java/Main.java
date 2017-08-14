@@ -36,7 +36,24 @@ public class Main {
 			conn = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(activeBidMachine);
+			
+			
+			
+			
+			ResultSet rs = stmt.executeQuery("select process_num from bid_machine_mngs where status = 'Inactive' AND date_add(now(), interval -5 minute) < cur_crashed_at");
+			
+			int inactiveProcessNum = 0;
+			StringBuffer crashedList = new StringBuffer();
+			while(rs.next()){
+				inactiveProcessNum++;
+				crashedList.append(rs.getInt(1) + " ");
+			}
+			if( inactiveProcessNum == 0 ){
+				System.out.println(getCurrentTime() + "모든 프로세스 정상 작동 중");
+				return;
+			}
+			System.out.println(getCurrentTime() + "ProcessNum " + crashedList.toString() + "Crashed");
+			rs = stmt.executeQuery(activeBidMachine);
 			
 			List<Integer> activeProcessList = new ArrayList<Integer>();
 			while( rs.next() ){
@@ -79,7 +96,7 @@ public class Main {
 					}
 				}
 			}
-			PreparedStatement pstmt = conn.prepareStatement("UPDATE bid_favorite_keywords SET process_num = ? WHERE kwd_nm = ? AND target = ?");
+			PreparedStatement pstmt = conn.prepareStatement("UPDATE bid_favorite_keywords SET process_num = ?, updated_at = now() WHERE kwd_nm = ? AND target = ?");
 			for(Map<String, Object> kwd : kwdList){
 				pstmt.setObject(1, kwd.get("process_num"));
 				pstmt.setObject(2, kwd.get("kwd_nm"));
@@ -88,7 +105,7 @@ public class Main {
 				pstmt.clearParameters();
 			}
 			int[] result = pstmt.executeBatch();
-			System.out.println("업데이트 된 키워드 네임 갯수 : " + result.length);
+			System.out.println(getCurrentTime() + "업데이트 된 키워드 네임 갯수 : " + result.length);
 			conn.commit();
 		}catch(Exception e){
 			e.printStackTrace();
