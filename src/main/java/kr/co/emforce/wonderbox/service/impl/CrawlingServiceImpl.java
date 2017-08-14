@@ -1,5 +1,6 @@
 package kr.co.emforce.wonderbox.service.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +22,7 @@ import kr.co.emforce.wonderbox.dao.CrawlingDao;
 import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.BidMachineMng;
 import kr.co.emforce.wonderbox.model.CrawlingResult;
+import kr.co.emforce.wonderbox.module.IProcess;
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
@@ -71,6 +73,28 @@ public class CrawlingServiceImpl implements CrawlingService{
 				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
 				log.info("checked_at : " + checked_at);
+				String advId = (String) joinSelectMap.get("adv_id");
+				String customerId = (String) joinSelectMap.get("na_account_ser");
+				String kwdId = (String) joinSelectMap.get("kwd_id");
+				Integer rank = crawlingMap.get(joinSelectMap.get("site")).getRank();
+				Integer rankRange = crawlingMap.size();
+				String goalRank = (String) joinSelectMap.get("goal_rank");
+				String maxBidAmt = (String) joinSelectMap.get("max_bid_amt");
+				String emergencyStatus = (String) joinSelectMap.get("emergency_status");
+				
+				List<String> args = new ArrayList<String>();
+				args.add(advId);
+				args.add(customerId);
+				args.add(kwdId);
+				args.add(target);
+				args.add(rank.toString());
+				args.add(rankRange.toString());
+				args.add(goalRank);
+				args.add(checked_at);
+				args.add(maxBidAmt);
+				args.add(emergencyStatus);
+				
+		    runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
 		}catch(Exception e){
 			log.info(e.getMessage());
@@ -136,4 +160,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 		}
 	}
 	
+	public void runModule(String modPath, String modName, List<String> arguments) throws Exception {
+    arguments.add(0, modName);
+
+    ProcessBuilder pb = new ProcessBuilder(arguments);
+    pb.directory(new File(modPath));
+    pb.start();
+	}	
 }
