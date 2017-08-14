@@ -37,7 +37,7 @@ public class Main {
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
 			
-			// 5분이내에 크래쉬된 프로세스이면서 updated_at과 시간이 같은 것 셀렉트
+			// 5분이내에 crashed_at >= 5분이내 and crashed_at >= updated_at 
 			ResultSet rs = stmt.executeQuery("select process_num from bid_machine_mngs where status = 'Inactive' AND date_add(now(), interval -5 minute) <= cur_crashed_at AND cur_crashed_at >= updated_at");
 			
 			List<Integer> crashedList = new ArrayList<Integer>();
@@ -104,7 +104,6 @@ public class Main {
 			System.out.println(getCurrentTime() + "업데이트 된 키워드 네임 갯수 : " + result.length);
 			
 			for(int pn : crashedList){
-				System.out.println(pn);
 				stmt.executeUpdate("UPDATE bid_machine_mngs SET updated_at = now() WHERE process_num = " + pn);
 			}
 			
