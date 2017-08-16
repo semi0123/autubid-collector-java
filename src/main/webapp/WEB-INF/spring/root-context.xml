@@ -21,7 +21,7 @@
 	<task:annotation-driven/>
 	
 	<!-- MyBatis Mysql -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<bean id="dataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://#{systemProperties['db.host']}/#{systemProperties['db.name']}?useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="username" value="#{systemProperties['db.username']}" />
@@ -32,6 +32,17 @@
 		<property name="timeBetweenEvictionRunsMillis" value="7200000" />
 		<!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
 	</bean>
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="dataSourceOrigin" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix" value="SQL         :  "/>
+            </bean>
+        </property>
+    </bean>
+	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
