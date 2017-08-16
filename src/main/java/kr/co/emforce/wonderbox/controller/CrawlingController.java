@@ -34,6 +34,7 @@ public class CrawlingController {
 			@RequestParam(value="process_num") Integer process_num,
 			@RequestParam(value="bid_status", required=false, defaultValue="Active") String bid_status,
 			@RequestParam(value="target", required=false) String target,
+			@RequestParam(value="emergency_status", required=false) String emergency_status,
 			@RequestParam(value="caller", required=false, defaultValue="module") String caller,
 			HttpServletRequest request
 		){
@@ -44,6 +45,7 @@ public class CrawlingController {
 		inputMap.put("bid_status", bid_status);
 		inputMap.put("target", target);
 		inputMap.put("caller", caller);
+		inputMap.put("emergency_status", emergency_status);
 		
 		return crawlingService.selectForCrawlingModule(inputMap);
 	}

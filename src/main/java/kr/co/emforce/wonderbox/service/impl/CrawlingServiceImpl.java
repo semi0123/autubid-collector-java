@@ -94,7 +94,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(maxBidAmt);
 				args.add(emergencyStatus);
 				
-		    runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
+				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
 		}catch(Exception e){
 			log.info(e.getMessage());
@@ -161,10 +161,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 	}
 	
 	public void runModule(String modPath, String modName, List<String> arguments) throws Exception {
-    arguments.add(0, modName);
-
-    ProcessBuilder pb = new ProcessBuilder(arguments);
-    pb.directory(new File(modPath));
-    pb.start();
+	    arguments.add(0, modName);
+	
+	    ProcessBuilder pb = new ProcessBuilder(arguments);
+	    pb.directory(new File(modPath));
+	    pb.start();
 	}	
 }
