@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -15,9 +14,6 @@ public class HistoryUtil {
 
 	public static void writekwdRankHistories(String dir_path, String kwd_nm, String target, String checked_at,
 			String emergency_status, int search_ad_id, ArrayList<Map<String, Object>> rnk_list) throws IOException {
-
-		Iterator<String> keyIter = null;
-		String key = null;
 
 		String file_path = dir_path + "/" + target + "/" + checked_at.substring(0, 10);
 		File Dir = new File(file_path);
@@ -39,8 +35,6 @@ public class HistoryUtil {
 				pw.print("ad_dsc\n");
 
 				for (Map<String, Object> json : rnk_list) {
-					keyIter = json.keySet().iterator();
-					System.out.println("keyIter:-------------------------");
 					pw.print(checked_at + "\t");
 					pw.print(json.get("rank") + "\t");
 					pw.print(json.get("site") + "\t");
@@ -60,8 +54,6 @@ public class HistoryUtil {
 			try {
 				PrintWriter pww = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
 				for (Map<String, Object> json : rnk_list) {
-					keyIter = json.keySet().iterator();
-					System.out.println("keyIter:-------------------------");
 					pww.print(checked_at + "\t");
 					pww.print(json.get("rank") + "\t");
 					pww.print(json.get("site") + "\t");

@@ -61,24 +61,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String target = requestBody.get("target").toString();
 		String checked_at = requestBody.get("checked_at").toString();
 		String emergency_status = requestBody.get("emergency_status").toString();
-		
 		ArrayList<Map<String,Object>> rnk_list = (ArrayList<Map<String, Object>>) requestBody.get("result_rank");
-		
 
-//		Iterator<String> keyIter = null;
-//		String key = null;
-//		
-//		for(Map<String, Object> json : rnk_list){
-//			keyIter = json.keySet().iterator();
-//			System.out.println("keyIter:"+keyIter.toString());
-//			while( keyIter.hasNext() ){
-//				key = keyIter.next();
-//				System.out.println("key:"+key.toString());
-//				System.out.println("key value :"+json.get(key));
-//			}			
-//		}
-		
-		
 		Map<Object, CrawlingResult> crawlingMap = null;
 		List<BidFavoriteKeyword> activeBfkList = null;
 		Map<String, Object> joinSelectMap = null;
@@ -131,14 +115,13 @@ public class CrawlingServiceImpl implements CrawlingService{
 				  	cnt++;
 				}
 
-//				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
+				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
 			
 			try {
 				
 				int search_ad_id = crawlingDao.selectSearchAdId(kwd_nm);
 				log.info("rank history search_ad_id : " + search_ad_id);
-//				String file_path = IProcess.RANK_HISTORY_DIR + "/"+ target+"/";
 				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
 				
 			}catch(Exception e) {
