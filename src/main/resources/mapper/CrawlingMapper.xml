@@ -60,8 +60,19 @@
 			<if test="bid_status != null">
 				AND bid_status = #{bid_status}
 			</if>
+		  	<if test="emergency_status == 'False'">
+		  		AND emergency_status = 'False'
+		  	</if>
+		  	<if test="emergency_status != 'False'">
+		  		AND emergency_status != 'False'
+		  	</if>			
 		  </where>
 	</select>
+	<select id="selectSearchAdId" parameterType="String" resultType="int">
+		SELECT id
+		FROM search_ads
+		WHERE name = #{kwd_nm}
+	</select>	
 	
 	<select id="selectStatusFromBidMachine" parameterType="Map" resultType="BidMachineMng">
 		SELECT id, created_by, updated_by, process_num, status, cur_crashed_at, cur_rerunned_at, created_at, updated_at

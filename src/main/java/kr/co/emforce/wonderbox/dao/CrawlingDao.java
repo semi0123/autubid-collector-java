@@ -17,4 +17,6 @@ public interface CrawlingDao {
 	public Map<String, Object> selectOneForBidAmtChangeModule(String kwd_id);
 	
 	public int updateProcessNumFromBidFavoriteKeyword(Map<String, Object> inputMap);
+	
+	public int selectSearchAdId(String kwd_nm);
 }

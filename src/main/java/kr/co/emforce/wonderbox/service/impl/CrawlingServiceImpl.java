@@ -1,6 +1,8 @@
 package kr.co.emforce.wonderbox.service.impl;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,7 +27,13 @@ import kr.co.emforce.wonderbox.model.CrawlingResult;
 import kr.co.emforce.wonderbox.module.IProcess;
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
+import kr.co.emforce.wonderbox.util.HistoryUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
+
+
+import java.util.Iterator;
+
+
 
 @Service
 public class CrawlingServiceImpl implements CrawlingService{
@@ -52,6 +60,24 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String kwd_nm = requestBody.get("kwd_nm").toString();
 		String target = requestBody.get("target").toString();
 		String checked_at = requestBody.get("checked_at").toString();
+		String emergency_status = requestBody.get("emergency_status").toString();
+		
+		ArrayList<Map<String,Object>> rnk_list = (ArrayList<Map<String, Object>>) requestBody.get("result_rank");
+		
+
+//		Iterator<String> keyIter = null;
+//		String key = null;
+//		
+//		for(Map<String, Object> json : rnk_list){
+//			keyIter = json.keySet().iterator();
+//			System.out.println("keyIter:"+keyIter.toString());
+//			while( keyIter.hasNext() ){
+//				key = keyIter.next();
+//				System.out.println("key:"+key.toString());
+//				System.out.println("key value :"+json.get(key));
+//			}			
+//		}
+		
 		
 		Map<Object, CrawlingResult> crawlingMap = null;
 		List<BidFavoriteKeyword> activeBfkList = null;
@@ -59,7 +85,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		
 		try{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
-			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active"));
+			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active").setEmergency_status(emergency_status));
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
 				log.info("adv_id : " + joinSelectMap.get("adv_id"));
@@ -99,14 +125,28 @@ public class CrawlingServiceImpl implements CrawlingService{
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
 				log.info("args => ");
 				
-			  int cnt = 0;
-			  for(String temp : args){
-			  	log.info("["+cnt+"] "+temp);
-			  	cnt++;
-			  }
+				int cnt = 0;
+				for(String temp : args){
+					log.info("["+cnt+"] "+temp);
+				  	cnt++;
+				}
 
-				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
+//				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
+			
+			try {
+				
+				int search_ad_id = crawlingDao.selectSearchAdId(kwd_nm);
+				log.info("rank history search_ad_id : " + search_ad_id);
+//				String file_path = IProcess.RANK_HISTORY_DIR + "/"+ target+"/";
+				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
+				
+			}catch(Exception e) {
+				log.info("rank history error : " + e.getMessage());
+			}
+			
+			
+			
 		}catch(Exception e){
 			log.info(e.getMessage());
 		}
