@@ -6,11 +6,43 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HistoryUtil {
+
+	private static final Logger log = LoggerFactory.getLogger(HistoryUtil.class);
+	public static final String BID_FILE_HISTORY_DIR = System.getProperty("bidfilehistory.dir");
+
+	public static void writekwdBidHistories(String customerId, String kwdId, String kwd_nm,String type_desc, String write_msg , String user_id, String checked_at) throws IOException {
+		
+		String rootPath = BID_FILE_HISTORY_DIR;
+		String format = "yyyyMMdd";
+		String date = DateFormatter.dateToString(new Date(), format);
+		String fileName = date + ".txt";
+		
+      	int start = kwdId.length()-4;
+      	int end = kwdId.length();
+      	String sep = kwdId.substring(start, end);
+      	String filePath = rootPath + "/" + customerId + "/" + sep + "/" + kwdId;
+      	
+      	File Dir = new File(filePath);
+      	FileUtils.forceMkdir(Dir);
+      	
+      	File outFile = new File(filePath, fileName);
+     		
+      	String txt = kwd_nm + "\t" + type_desc + "\t" + write_msg + "\t" + user_id + "\t" + checked_at + "\n";
+      	log.info("txt : " + txt);
+      	BufferedWriter bw = null;
+      	bw = new BufferedWriter(new FileWriter(outFile, true));
+      	bw.write(txt);
+      	bw.flush();
+      	bw.close();
+	}
 
 	public static void writekwdRankHistories(String dir_path, String kwd_nm, String target, String checked_at,
 			String emergency_status, int search_ad_id, ArrayList<Map<String, Object>> rnk_list) throws IOException {

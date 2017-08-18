@@ -34,9 +34,9 @@
 	</select>
 	
 	<select id="selectOneForBidAmtChangeModule" parameterType="String" resultType="HashMap">
-		SELECT bf.advs_id adv_id, bfk.kwd_id, ai.na_account_ser, bfk.goal_rank, bfk.max_bid_amt, bfk.site, bfk.emergency_status
+		SELECT bf.advs_id adv_id, bfk.kwd_id, ai.na_account_ser, bfk.goal_rank, bfk.max_bid_amt, bfk.site, bfk.emergency_status,bfk.rank
 		  FROM bid_favorites bf,
-		       (SELECT kwd_id, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status
+		       (SELECT kwd_id, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status,rank
 		          FROM bid_favorite_keywords
 		         WHERE kwd_id = #{_parameter}) bfk,
 		       adv_infos ai

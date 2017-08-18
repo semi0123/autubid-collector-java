@@ -72,25 +72,41 @@ public class CrawlingServiceImpl implements CrawlingService{
 			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active").setEmergency_status(emergency_status));
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
-				log.info("adv_id : " + joinSelectMap.get("adv_id"));
-				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
-				log.info("kwd_nm : " + kwd_nm);
-				log.info("target : " + target);
-				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
-				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
-				log.info("rank_range : " + crawlingMap.size());
-				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
-				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
-				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
-				log.info("checked_at : " + checked_at);
+				
+//				log.info(joinSelectMap);
+				
+//				log.info("adv_id : " + joinSelectMap.get("adv_id"));
+//				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
+//				log.info("kwd_nm : " + kwd_nm);
+//				log.info("target : " + target);
+//				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
+//				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
+//				log.info("rank_range : " + crawlingMap.size());
+//				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
+//				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
+//				log.info("cur_rank 1: " + bfk.getRank());
+//				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
+//				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
+//				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
+				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
 				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
 				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
+				
+				if( before_rank != rank ) {
+					log.info("TODO Write History :");
+					log.info("customerId : " + customerId+ " kwdId : " + kwdId+ " kwd_nm : " + kwd_nm + "checked_at : " + checked_at ); 
+					
+					String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
+					String user_id = "시스템 ";
+					String type_desc = "자동";
+					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at);
+				}
 
 				
 				List<String> args = new ArrayList<String>();
