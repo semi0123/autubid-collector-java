@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Main {
+public class Crashed {
 	
 	private static final String activeBidMachine = "SELECT process_num FROM bid_machine_mngs WHERE status = 'Active'";
 	private static final String pnByKwd = "SELECT kwd_nm, target, process_num FROM bid_favorite_keywords WHERE bid_status = 'Active' AND target is not null GROUP BY kwd_nm, target";
@@ -59,6 +59,14 @@ public class Main {
 			Map<Integer, Integer> processCapacity = new HashMap<Integer, Integer>();
 			int totalCount = 0;
 			Integer numOfMachine = bmmArr.length;
+			
+			System.out.println("Active 상태인 프로세스 개수 : " + numOfMachine);
+			if( numOfMachine == 0 ){
+				System.out.println("Active인 프로세스가 없으므로 재배정 실패");
+				return;
+			}
+						
+			
 			for(int i=0; i<numOfMachine; i++){
 				bmmArr[i] = activeProcessList.get(i);
 				processCapacity.put(bmmArr[i], 0);
@@ -81,14 +89,19 @@ public class Main {
 			Integer curCapacity = null;
 			
 			for(Map<String, Object> kwd : kwdList){
-				while(true){
-					machineNum = bmmArr[random.nextInt(numOfMachine)];
-					curCapacity = processCapacity.get(machineNum);
-					if( kwd.get("process_num") != machineNum && curCapacity < 100){
-						kwd.put("process_num", machineNum);
-						processCapacity.put(machineNum, curCapacity+1);
-						totalCount++;
-						break;
+				if( numOfMachine == 1 ){
+					kwd.put("process_num", bmmArr[0]);
+					totalCount++;
+				}else{
+					while(true){
+						machineNum = bmmArr[random.nextInt(numOfMachine)];
+						curCapacity = processCapacity.get(machineNum);
+						if( kwd.get("process_num") != machineNum && curCapacity < 100){
+							kwd.put("process_num", machineNum);
+							processCapacity.put(machineNum, curCapacity+1);
+							totalCount++;
+							break;
+						}
 					}
 				}
 			}

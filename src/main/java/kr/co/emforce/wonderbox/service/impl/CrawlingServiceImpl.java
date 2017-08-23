@@ -169,6 +169,13 @@ public class CrawlingServiceImpl implements CrawlingService{
 		
 		int totalCount = 0;
 		Integer numOfMachine = bmmArr.length;
+		log.info(CurrentTimeUtil.getCurrentTime() + "Active 상태인 프로세스 개수 : " + numOfMachine);
+		if( numOfMachine == 0 ){
+			log.error(CurrentTimeUtil.getCurrentTime() + "Active인 프로세스가 없으므로 재배정 실패");
+			return;
+		}
+					
+		
 		for(int i=0; i<numOfMachine; i++){
 			bmmArr[i] = bmmList.get(i).getProcess_num();
 			processCapacity.put(bmmArr[i], 0);
@@ -180,14 +187,19 @@ public class CrawlingServiceImpl implements CrawlingService{
 		Random random = new Random();
 		Integer curCapacity = null;
 		for(Map<String, Object> kwd : kwdList){
-			while(true){
-				machineNum = bmmArr[random.nextInt(numOfMachine)];
-				curCapacity = processCapacity.get(machineNum);
-				if( kwd.get("process_num") != machineNum && curCapacity < 100){
-					kwd.put("process_num", machineNum);
-					processCapacity.put(machineNum, curCapacity+1);
-					totalCount++;
-					break;
+			if( numOfMachine == 1 ){
+				kwd.put("process_num", bmmArr[0]);
+				totalCount++;
+			}else{
+				while(true){
+					machineNum = bmmArr[random.nextInt(numOfMachine)];
+					curCapacity = processCapacity.get(machineNum);
+					if( kwd.get("process_num") != machineNum && curCapacity < 100){
+						kwd.put("process_num", machineNum);
+						processCapacity.put(machineNum, curCapacity+1);
+						totalCount++;
+						break;
+					}
 				}
 			}
 		}

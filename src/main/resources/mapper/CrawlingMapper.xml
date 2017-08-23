@@ -23,11 +23,13 @@
 		  <if test="target != null">
 		  	AND target = #{target}
 		  </if>
-		  <if test="emergency_status == 'False'">
-		  	AND emergency_status = 'False'
-		  </if>
-		  <if test="emergency_status != 'False'">
-		  	AND emergency_status != 'False'
+		  <if test="emergency_status != null">
+		  	<if test="emergency_status != 'False'">
+		  		AND emergency_status != 'False'
+		  	</if>
+		  	<if test="emergency_status == 'False'">
+		  		AND emergency_status = 'False'
+		  	</if>
 		  </if>
 	   </where>
 	  GROUP BY kwd_nm, target
