@@ -71,7 +71,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
 			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active").setEmergency_status(emergency_status));
 			for(BidFavoriteKeyword bfk : activeBfkList){
-				log.error("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
 				
 //				log.info(joinSelectMap);
@@ -87,7 +86,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
-//				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
 //				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
@@ -100,7 +98,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
-				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
+				
 				
 				if( before_rank != rank ) {
 					log.info("TODO Write History :");
@@ -123,7 +121,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(goalRank);
 				args.add(checked_at);
 				args.add(maxBidAmt);
-				args.add(emergencyStatus);
+				args.add(emergency_status);
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
