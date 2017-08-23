@@ -29,7 +29,7 @@ public class HistoryUtil {
       	int end = kwdId.length();
       	String sep = kwdId.substring(start, end);
       	String filePath = rootPath + "/" + customerId + "/" + sep + "/" + kwdId;
-      	
+      	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> filePath : " + filePath);
       	File Dir = new File(filePath);
       	FileUtils.forceMkdir(Dir);
       	
