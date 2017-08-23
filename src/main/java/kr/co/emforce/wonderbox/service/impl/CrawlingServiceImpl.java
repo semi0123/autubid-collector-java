@@ -91,7 +91,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
-				Integer rank = 0;
+				Integer rank = 16;
 				if( crawlingMap.containsKey(joinSelectMap.get("site")) ){
 					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
 				}
