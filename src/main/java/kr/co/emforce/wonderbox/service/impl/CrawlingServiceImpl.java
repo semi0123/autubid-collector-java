@@ -93,6 +93,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
 				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+				if( rank == null ) rank = 0;
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
