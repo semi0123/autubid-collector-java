@@ -25,10 +25,10 @@
 		  </if>
 		  <if test="emergency_status != null">
 		  	<if test="emergency_status == 'True'">
-		  		AND emergency_status == 'True'
+		  		AND emergency_status = 'True'
 		  	</if>
 		  	<if test="emergency_status == 'True_final'">
-		  		AND emergency_status == 'True_final'
+		  		AND emergency_status = 'True_final'
 		  	</if>		  	
 		  	<if test="emergency_status == 'False'">
 		  		AND emergency_status = 'False'

@@ -36,12 +36,16 @@ public class HistoryUtil {
       	File outFile = new File(filePath, fileName);
      		
       	String txt = kwd_nm + "\t" + type_desc + "\t" + write_msg + "\t" + user_id + "\t" + checked_at + "\n";
-      	log.info("txt : " + txt);
+      	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> txt : " + txt);
       	BufferedWriter bw = null;
       	bw = new BufferedWriter(new FileWriter(outFile, true));
       	bw.write(txt);
       	bw.flush();
       	bw.close();
+	}
+	
+	public static String changeCodeStatus(String write_msg) {
+		return ""; 
 	}
 
 	public static void writekwdRankHistories(String dir_path, String kwd_nm, String target, String checked_at,

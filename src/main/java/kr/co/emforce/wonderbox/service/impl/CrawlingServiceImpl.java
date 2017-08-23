@@ -86,19 +86,17 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
+//				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
 //				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
-				Integer rank = 16;
-				if( crawlingMap.containsKey(joinSelectMap.get("site")) ){
-					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
-				}
+				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
-				
+				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
 				
 				if( before_rank != rank ) {
 					log.info("TODO Write History :");
@@ -121,7 +119,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(goalRank);
 				args.add(checked_at);
 				args.add(maxBidAmt);
-				args.add(emergency_status);
+				args.add(emergencyStatus);
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
@@ -171,13 +169,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 		
 		int totalCount = 0;
 		Integer numOfMachine = bmmArr.length;
-		log.info(CurrentTimeUtil.getCurrentTime() + "Active 상태인 프로세스 개수 : " + numOfMachine);
-		if( numOfMachine == 0 ){
-			log.error(CurrentTimeUtil.getCurrentTime() + "Active인 프로세스가 없으므로 재배정 실패");
-			return;
-		}
-					
-		
 		for(int i=0; i<numOfMachine; i++){
 			bmmArr[i] = bmmList.get(i).getProcess_num();
 			processCapacity.put(bmmArr[i], 0);
@@ -189,19 +180,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 		Random random = new Random();
 		Integer curCapacity = null;
 		for(Map<String, Object> kwd : kwdList){
-			if( numOfMachine == 1 ){
-				kwd.put("process_num", bmmArr[0]);
-				totalCount++;
-			}else{
-				while(true){
-					machineNum = bmmArr[random.nextInt(numOfMachine)];
-					curCapacity = processCapacity.get(machineNum);
-					if( kwd.get("process_num") != machineNum && curCapacity < 100){
-						kwd.put("process_num", machineNum);
-						processCapacity.put(machineNum, curCapacity+1);
-						totalCount++;
-						break;
-					}
+			while(true){
+				machineNum = bmmArr[random.nextInt(numOfMachine)];
+				curCapacity = processCapacity.get(machineNum);
+				if( kwd.get("process_num") != machineNum && curCapacity < 100){
+					kwd.put("process_num", machineNum);
+					processCapacity.put(machineNum, curCapacity+1);
+					totalCount++;
+					break;
 				}
 			}
 		}
