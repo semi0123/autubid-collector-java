@@ -71,6 +71,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
 			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active").setEmergency_status(emergency_status));
 			for(BidFavoriteKeyword bfk : activeBfkList){
+				log.error("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
 				
 //				log.info(joinSelectMap);
@@ -92,8 +93,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
-				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
-				if( rank == null ) rank = 0;
+				Integer rank = 0;
+				if( crawlingMap.containsKey(joinSelectMap.get("site")) ){
+					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+				}
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
