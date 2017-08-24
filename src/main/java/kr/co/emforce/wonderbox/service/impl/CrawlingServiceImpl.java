@@ -74,7 +74,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
 				
 //				log.info(joinSelectMap);
-				
+//				
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
 //				log.info("kwd_nm : " + kwd_nm);
@@ -86,13 +86,20 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
-//				log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
-//				log.info("checked_at : " + checked_at);
+				Integer rank= 16;
+				try {
+					log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
+					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+				}catch(Exception e) {
+					log.info("===== : " + e.getMessage());
+					rank= 16;
+				}
+				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
-				Integer rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+				
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
