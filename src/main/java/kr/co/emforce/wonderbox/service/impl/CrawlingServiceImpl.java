@@ -96,16 +96,16 @@ public class CrawlingServiceImpl implements CrawlingService{
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
-				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
+//				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
 				
 				if( before_rank != rank ) {
 					log.info("TODO Write History :");
-					log.info("customerId : " + customerId+ " kwdId : " + kwdId+ " kwd_nm : " + kwd_nm + "checked_at : " + checked_at ); 
+					log.info(" | customerId : " + customerId+ " |  kwdId : " + kwdId+ " |  kwd_nm : " + kwd_nm + " | checked_at : " + checked_at + " | emergency_status:" + emergency_status); 
 					
 					String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
 					String user_id = "시스템 ";
 					String type_desc = "자동";
-					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at);
+					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				}
 
 				
@@ -119,7 +119,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(goalRank);
 				args.add(checked_at);
 				args.add(maxBidAmt);
-				args.add(emergencyStatus);
+				args.add(emergency_status);
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);

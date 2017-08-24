@@ -18,24 +18,24 @@ public class HistoryUtil {
 	private static final Logger log = LoggerFactory.getLogger(HistoryUtil.class);
 	public static final String BID_FILE_HISTORY_DIR = System.getProperty("bidfilehistory.dir");
 
-	public static void writekwdBidHistories(String customerId, String kwdId, String kwd_nm,String type_desc, String write_msg , String user_id, String checked_at) throws IOException {
+	public static void writekwdBidHistories(String customerId, String kwdId, String kwd_nm,String type_desc, String write_msg , String user_id, String checked_at, String emergency_status) throws IOException {
 		
 		String rootPath = BID_FILE_HISTORY_DIR;
 		String format = "yyyyMMdd";
 		String date = DateFormatter.dateToString(new Date(), format);
-		String fileName = date + ".txt";
+		String fileName = kwdId + ".txt";
 		
       	int start = kwdId.length()-4;
       	int end = kwdId.length();
       	String sep = kwdId.substring(start, end);
-      	String filePath = rootPath + "/" + customerId + "/" + sep + "/" + kwdId;
+      	String filePath = rootPath + "/" + date + "/" + customerId + "/" + sep;
       	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> filePath : " + filePath);
       	File Dir = new File(filePath);
       	FileUtils.forceMkdir(Dir);
       	
       	File outFile = new File(filePath, fileName);
      		
-      	String txt = kwd_nm + "\t" + type_desc + "\t" + write_msg + "\t" + user_id + "\t" + checked_at + "\n";
+      	String txt = kwd_nm + "\t" + type_desc + "\t" + write_msg + "\t" + user_id + "\t" + checked_at + "\t" + emergency_status +"\n";
       	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> txt : " + txt);
       	BufferedWriter bw = null;
       	bw = new BufferedWriter(new FileWriter(outFile, true));
