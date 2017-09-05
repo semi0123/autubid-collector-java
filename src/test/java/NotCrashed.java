@@ -19,14 +19,14 @@ public class NotCrashed {
 	
 	public static void main(String[] args) {
 		String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-//		String HOST = "211.215.18.244"; //args[0];
-//		String DB_NAME = "wonderbox_beta"; //args[1];
-//		String USER_NAME = "wonderbox"; //args[2];
-//		String PASSWORD = "wkddb3250"; //args[3];
-		String HOST = args[0];
-		String DB_NAME = args[1];
-		String USER_NAME = args[2];
-		String PASSWORD = args[3];
+		String HOST = "211.215.18.252"; //args[0];
+		String DB_NAME = "wonderbox_production"; //args[1];
+		String USER_NAME = "wonderbox"; //args[2];
+		String PASSWORD = "wkddb3250"; //args[3];
+//		String HOST = args[0];
+//		String DB_NAME = args[1];
+//		String USER_NAME = args[2];
+//		String PASSWORD = args[3];
 		String DB_URL = "jdbc:mysql://"+ HOST +"/" + DB_NAME +"?useUnicode=true&characterEncoding=utf8";
 		Connection conn = null;
 		Statement stmt = null;
