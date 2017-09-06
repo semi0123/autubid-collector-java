@@ -102,7 +102,7 @@
 		       updated_at = NOW(),
 		       status = 'Inactive'
 		 WHERE process_num = #{value}
-		       AND cur_crashed_at IS NOT NULL
+		       AND cur_crashed_at IS NULL
 	</update>
 	
 </mapper>
