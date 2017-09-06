@@ -19,4 +19,6 @@ public interface CrawlingDao {
 	public int updateProcessNumFromBidFavoriteKeyword(Map<String, Object> inputMap);
 	
 	public int selectSearchAdId(String kwd_nm);
+	
+	public int updateCrash(int processNum);
 }

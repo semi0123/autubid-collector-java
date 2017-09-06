@@ -224,4 +224,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 	    pb.directory(new File(modPath));
 	    pb.start();
 	}	
+	
+	@Override
+	public void crash(int processNum) {
+		crawlingDao.updateCrash(processNum);
+	}
 }

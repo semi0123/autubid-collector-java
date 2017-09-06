@@ -14,4 +14,6 @@ public interface CrawlingService {
 	
 	public void sendCrawlingPostJsonString(Map<String, Object> requestBody);
 	
+	public void crash(int processNum);
+	
 }
