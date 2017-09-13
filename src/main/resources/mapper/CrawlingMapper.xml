@@ -80,12 +80,15 @@
 	</select>	
 	
 	<select id="selectStatusFromBidMachine" parameterType="Map" resultType="BidMachineMng">
-		SELECT id, created_by, updated_by, process_num, status, cur_crashed_at, cur_rerunned_at, created_at, updated_at
+		SELECT id, created_by, updated_by, process_num, status, cur_crashed_at, cur_rerunned_at, created_at, updated_at, ip_v4, name, `desc`
 		  FROM bid_machine_mngs
 		 <where>
 			<if test="status != null">
 				status = #{status}
-			</if>				 
+			</if>
+			<if test="process_num != null">
+				AND process_num = #{process_num}
+			</if>			 
 		 </where>
 	</select>
 	

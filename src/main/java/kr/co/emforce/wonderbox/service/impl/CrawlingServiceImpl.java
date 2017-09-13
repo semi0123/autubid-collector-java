@@ -1,8 +1,6 @@
 package kr.co.emforce.wonderbox.service.impl;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,6 +16,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import kr.co.emforce.wonderbox.dao.CrawlingDao;
@@ -29,9 +30,6 @@ import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.HistoryUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
-
-
-import java.util.Iterator;
 
 
 
@@ -48,6 +46,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Inject
 	private SqlSessionFactory sqlSessionFactory;
+	
+	@Autowired
+	JavaMailSender mailSender;
 	
 	@Override
 	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
@@ -227,6 +228,17 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Override
 	public void crash(int processNum) {
-		crawlingDao.updateCrash(processNum);
+		if( crawlingDao.updateCrash(processNum) == 1 ){
+			SimpleMailMessage smm = new SimpleMailMessage();
+			smm.setFrom("jungyw@emforce.co.kr");
+			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", });
+			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr" });
+			smm.setSubject("자동입찰 솔루션 오류");
+			Map<String, Object> inputMap = new HashMap<String, Object>();
+			inputMap.put("process_num", processNum);
+			smm.setText(crawlingDao.selectStatusFromBidMachine(inputMap).get(0).getDesc());
+			mailSender.send(smm);
+			log.error(processNum + " Crawling Error Send Mail");
+		}
 	}
 }

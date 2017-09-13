@@ -72,10 +72,10 @@ public class CrawlingController {
 	}
 	
 	@RequestMapping(value="/crash/", method=RequestMethod.POST)
-	@ResponseBody
-	public void crash(int process_num){
-		crawlingService.crash(process_num);
-		log.info(CurrentTimeUtil.getCurrentTime() + "Proces Num " + process_num + " crash");
+	public void crash(@RequestBody Map<String, Integer> reqBody){
+		log.info("crash in");
+		crawlingService.crash(reqBody.get("process_num"));
+		log.info(CurrentTimeUtil.getCurrentTime() + "Proces Num " + reqBody.get("process_num") + " crash");
 	}
 	
 	@RequestMapping(value="/directRelocate/")

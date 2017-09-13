@@ -29,6 +29,26 @@
 				<wasremotedir>/www/WAS/a3tio-ad-collector</wasremotedir>
 			</properties>
 		</profile>
+		<profile>
+			<id>production1</id>
+			<properties>
+				<ftp.server>1.255.54.188</ftp.server>
+				<ftp.userid>a3tio</ftp.userid>
+				<ftp.password>em4s1905</ftp.password>
+				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>
+				<wasremotedir>/www/WAS/a3tio-ad-collector</wasremotedir>
+			</properties>
+		</profile>
+		<profile>
+			<id>production2</id>
+			<properties>
+				<ftp.server>220.230.124.185</ftp.server>
+				<ftp.userid>a3tio</ftp.userid>
+				<ftp.password>em4s1905</ftp.password>
+				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>
+				<wasremotedir>/www/WAS/a3tio-ad-collector</wasremotedir>
+			</properties>
+		</profile>
 	</profiles>
 	
 	<properties>
@@ -70,7 +90,17 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
 		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>		
 				
 		<!-- AspectJ -->
 		<dependency>
@@ -343,6 +373,7 @@
             								<fileset dir="target/a3tio-ad-collector">
             									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
             									<include name="WEB-INF/classes/**/*"/>
+            									<include name="WEB-INF/lib/**/*"/>
             									<exclude name="WEB-INF/classes/log4j.xml"/>
             								</fileset>
             							</ftp>
@@ -357,7 +388,7 @@
             								<fileset dir="target/a3tio-ad-collector">
             									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
             									<include name="WEB-INF/spring/**/*"/>
-            									<include name="WEB-INF/*.xml"/>
+            									<include name="WEB-INF/web.xml"/>
             								</fileset>
             							</ftp>
             						</then>

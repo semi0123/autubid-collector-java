@@ -13,7 +13,31 @@ public class BidMachineMng {
 	private Timestamp created_at;
 	private Timestamp updated_at;
 	private Timestamp checked_at;
+	private String ip_v4;
+	private String name;
+	private String desc;
 	
+	public String getIp_v4() {
+		return ip_v4;
+	}
+	public BidMachineMng setIp_v4(String ip_v4) {
+		this.ip_v4 = ip_v4;
+		return this;
+	}
+	public String getName() {
+		return name;
+	}
+	public BidMachineMng setName(String name) {
+		this.name = name;
+		return this;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public BidMachineMng setDesc(String desc) {
+		this.desc = desc;
+		return this;
+	}
 	public Integer getId() {
 		return id;
 	}
