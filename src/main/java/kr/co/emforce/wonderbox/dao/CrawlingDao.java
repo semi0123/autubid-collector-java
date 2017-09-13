@@ -21,4 +21,6 @@ public interface CrawlingDao {
 	public int selectSearchAdId(String kwd_nm);
 	
 	public int updateCrash(int processNum);
+	
+	public List<BidFavoriteKeyword> selectKeywordsInCrashedMachine(Integer processNum);
 }

@@ -5,6 +5,13 @@
 
 <mapper namespace="kr.co.emforce.wonderbox.dao.CrawlingDao">
 
+	<select id="selectKeywordsInCrashedMachine" parameterType="Integer" resultType="BidFavoriteKeyword">
+		SELECT kwd_nm, target
+		  FROM bid_favorite_keywords
+		 WHERE process_num = #{value}
+	  GROUP BY kwd_nm, target
+	</select>
+
 	<select id="selectKwdNmAndTargetFromBidFavoriteKeywords" parameterType="Map" resultType="HashMap">
 		SELECT kwd_nm, target, process_num
 		  FROM bid_favorite_keywords

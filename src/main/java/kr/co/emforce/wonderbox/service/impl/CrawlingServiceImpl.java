@@ -229,14 +229,23 @@ public class CrawlingServiceImpl implements CrawlingService{
 	@Override
 	public void crash(int processNum) {
 		if( crawlingDao.updateCrash(processNum) == 1 ){
+			Map<String, Object> inputMap = new HashMap<String, Object>();
+			inputMap.put("process_num", processNum);
+			
+			StringBuffer content = new StringBuffer();
+			content.append(crawlingDao.selectStatusFromBidMachine(inputMap).get(0).getDesc()+"\n\n");
+			List<BidFavoriteKeyword> keywords = crawlingDao.selectKeywordsInCrashedMachine(processNum);
+			content.append("해당 크롤링 머신에서 크롤링하던 키워드 리스트\n[ 키워드명 / 타겟 ]\n");
+			for(BidFavoriteKeyword keyword : keywords){
+				content.append("[ " + keyword.getKwd_nm() + " / " + keyword.getTarget() + " ]\n");
+			}
+			
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
 			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", });
 			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr" });
 			smm.setSubject("자동입찰 솔루션 오류");
-			Map<String, Object> inputMap = new HashMap<String, Object>();
-			inputMap.put("process_num", processNum);
-			smm.setText(crawlingDao.selectStatusFromBidMachine(inputMap).get(0).getDesc());
+			smm.setText(content.toString());
 			mailSender.send(smm);
 			log.error(processNum + " Crawling Error Send Mail");
 		}
