@@ -239,6 +239,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			for(BidFavoriteKeyword keyword : keywords){
 				content.append("[ " + keyword.getKwd_nm() + " / " + keyword.getTarget() + " ]\n");
 			}
+			content.append("\n\n* 해당 메일은 입찰 솔루션 오류 발생시 자동으로 발송되는 메일입니다.\n\n\n");
 			
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
