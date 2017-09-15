@@ -244,7 +244,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
 			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", });
-			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr" });
+			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr", "xnzm@emforce.co.kr", "jchope@emforce.co.kr"  });
 			smm.setSubject("자동입찰 솔루션 오류");
 			smm.setText(content.toString());
 			mailSender.send(smm);
