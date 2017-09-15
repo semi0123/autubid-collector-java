@@ -251,4 +251,12 @@ public class CrawlingServiceImpl implements CrawlingService{
 			log.error(processNum + " Crawling Error Send Mail");
 		}
 	}
+	
+	@Override
+	public int updateReRun(String processNum) {
+		if( "All".equals(processNum) ){
+			processNum = null;
+		}
+		return crawlingDao.updateReRun(processNum);
+	}
 }

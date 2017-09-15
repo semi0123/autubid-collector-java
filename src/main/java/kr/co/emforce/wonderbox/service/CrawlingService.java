@@ -16,4 +16,6 @@ public interface CrawlingService {
 	
 	public void crash(int processNum);
 	
+	public int updateReRun(String processNum);
+	
 }

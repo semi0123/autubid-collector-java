@@ -23,4 +23,6 @@ public interface CrawlingDao {
 	public int updateCrash(int processNum);
 	
 	public List<BidFavoriteKeyword> selectKeywordsInCrashedMachine(Integer processNum);
+	
+	public int updateReRun(String processNum);
 }
