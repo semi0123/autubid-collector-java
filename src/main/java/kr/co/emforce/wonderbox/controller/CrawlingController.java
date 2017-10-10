@@ -66,15 +66,17 @@ public class CrawlingController {
 			crawlingService.runBidModule(requestBody);
 			crawlingService.sendCrawlingPostJsonString(requestBody);
 		}catch(Exception e){
+			e.printStackTrace();
 			log.error("Crawling Post Error!!!");
 			log.error(e.getMessage());
 		}
 	}
 	
 	@RequestMapping(value="/crash/", method=RequestMethod.POST)
-	public void crash(@RequestBody Map<String, Integer> reqBody){
-		crawlingService.crash(reqBody.get("process_num"));
-		log.info(CurrentTimeUtil.getCurrentTime() + "Proces Num " + reqBody.get("process_num") + " crash");
+	@ResponseBody
+	public void crash(@RequestBody Map<String, String> reqBody){
+		crawlingService.crash(reqBody.get("name"));
+		log.info(CurrentTimeUtil.getCurrentTime() + "Server >>> " + reqBody.get("name") + " crash");
 	}
 	
 	@RequestMapping(value="/rerun/")

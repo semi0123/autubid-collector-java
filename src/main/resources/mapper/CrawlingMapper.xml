@@ -106,18 +106,21 @@
 		  	   AND target = #{target}
 	</update>
 	
-	<update id="updateCrash" parameterType="Integer">
-		UPDATE bid_machine_mngs
-		   SET cur_crashed_at = NOW(),
+	<update id="updateCrash" parameterType="String">
+		UPDATE bid_instances
+		   SET updated_by = 'SYSTEM',
 		       updated_at = NOW(),
 		       status = 'Inactive'
-		 WHERE process_num = #{value}
-		       AND cur_crashed_at IS NULL
+		 WHERE name = #{name}
+		       AND status = 'Active'
 	</update>
 	
-	
-	
-	
+	<select id="selectBidInstance" parameterType="String" resultType="BidInstance">
+		SELECT *
+		  FROM bid_instances
+		 WHERE name = #{_parameter}
+	</select>
+		
 	<update id="updateReRun" parameterType="String">
 		UPDATE bid_machine_mngs
 		   SET status = 'Active',
@@ -129,5 +132,6 @@
 			   AND process_num = #{_parameter}
 			   </if>
 	</update>
+	
 	
 </mapper>

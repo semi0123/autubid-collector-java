@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.emforce.wonderbox.dao.CrawlingDao;
 import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
+import kr.co.emforce.wonderbox.model.BidInstance;
 import kr.co.emforce.wonderbox.model.BidMachineMng;
 import kr.co.emforce.wonderbox.model.CrawlingResult;
 import kr.co.emforce.wonderbox.module.IProcess;
@@ -227,28 +228,25 @@ public class CrawlingServiceImpl implements CrawlingService{
 	}	
 	
 	@Override
-	public void crash(int processNum) {
-		if( crawlingDao.updateCrash(processNum) == 1 ){
+	public void crash(String name) {
+		if( crawlingDao.updateCrash(name) == 1 ){
 			Map<String, Object> inputMap = new HashMap<String, Object>();
-			inputMap.put("process_num", processNum);
-			
+			inputMap.put("name", name);
 			StringBuffer content = new StringBuffer();
-			content.append(crawlingDao.selectStatusFromBidMachine(inputMap).get(0).getDesc()+"\n\n");
-			List<BidFavoriteKeyword> keywords = crawlingDao.selectKeywordsInCrashedMachine(processNum);
-			content.append("해당 크롤링 머신에서 크롤링하던 키워드 리스트\n[ 키워드명 / 타겟 ]\n");
-			for(BidFavoriteKeyword keyword : keywords){
-				content.append("[ " + keyword.getKwd_nm() + " / " + keyword.getTarget() + " ]\n");
-			}
-			content.append("\n\n* 해당 메일은 입찰 솔루션 오류 발생시 자동으로 발송되는 메일입니다.\n\n\n");
-			
+			content.append("\n\n* 해당 메일은 입찰 솔루션 오류 발생시 자동으로 발송되는 메일입니다.\n\n");
+			BidInstance instance = crawlingDao.selectBidInstance(name);
+			content.append(instance.getDesc()+"\n\n")
+				   .append("name : " + instance.getName() + "\n\n")
+				   .append("label : " + instance.getLabel() + "\n\n")
+				   .append("ip_v4 : " + instance.getIp_v4() + "\n\n");
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
 			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", });
-			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr", "xnzm@emforce.co.kr", "jchope@emforce.co.kr"  });
+			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr"  });
 			smm.setSubject("자동입찰 솔루션 오류");
 			smm.setText(content.toString());
 			mailSender.send(smm);
-			log.error(processNum + " Crawling Error Send Mail");
+			log.error(name + " Crawling Error Send Mail");
 		}
 	}
 	
