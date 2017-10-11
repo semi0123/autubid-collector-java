@@ -13,7 +13,7 @@
 	</select>
 
 	<select id="selectKwdNmAndTargetFromBidFavoriteKeywords" parameterType="Map" resultType="HashMap">
-		SELECT kwd_nm, target, process_num
+		SELECT kwd_nm, target, process_num, emergency_status
 		  FROM bid_favorite_keywords
 	   <where>
 	   	  <if test="caller == 'module'">
