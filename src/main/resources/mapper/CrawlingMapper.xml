@@ -134,4 +134,35 @@
 	</update>
 	
 	
+	<insert id="insertBidCrawlingStats" parameterType="BidCrawlingStats">
+		INSERT INTO bid_crawling_stats(
+			created_by,
+			updated_by,
+			scheduled_at,
+			server_name,
+			emergency_status,
+			process_num,
+			kwd_cnt,
+			error_cnt,
+			success_cnt,
+			created_at,
+			updated_at,
+			work_time
+		)
+		VALUES(
+			#{created_by},
+			#{updated_by},
+			#{scheduled_at},
+			#{server_name},
+			#{emergency_status},
+			#{process_num},
+			#{kwd_cnt},
+			#{error_cnt},
+			#{success_cnt},
+			NOW(),
+			NOW(),
+			#{work_time}
+		)
+	</insert>
+	
 </mapper>

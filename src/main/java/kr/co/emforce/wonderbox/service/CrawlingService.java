@@ -18,4 +18,6 @@ public interface CrawlingService {
 	
 	public int updateReRun(String processNum);
 	
+	public int insertBidCrawlingStats(Map<String, Object> requestBody);
+	
 }

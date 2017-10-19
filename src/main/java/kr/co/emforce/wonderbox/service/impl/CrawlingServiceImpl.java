@@ -22,6 +22,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import kr.co.emforce.wonderbox.dao.CrawlingDao;
+import kr.co.emforce.wonderbox.model.BidCrawlingStats;
 import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.BidInstance;
 import kr.co.emforce.wonderbox.model.BidMachineMng;
@@ -241,8 +242,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				   .append("ip_v4 : " + instance.getIp_v4() + "\n\n");
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
-			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", });
-			smm.setCc(new String[] { "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr"  });
+			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr"});
 			smm.setSubject("자동입찰 솔루션 오류");
 			smm.setText(content.toString());
 			mailSender.send(smm);
@@ -256,5 +256,18 @@ public class CrawlingServiceImpl implements CrawlingService{
 			processNum = null;
 		}
 		return crawlingDao.updateReRun(processNum);
+	}
+	
+	@Override
+	public int insertBidCrawlingStats(Map<String, Object> requestBody) {
+		try{
+			BidCrawlingStats bidCrawlingStats = JsonToClassConverter.convert(requestBody,BidCrawlingStats.class);
+			bidCrawlingStats.setCreated_by("SYSTEM").setUpdated_by("SYSTEM");
+			crawlingDao.insertBidCrawlingStats(bidCrawlingStats);
+		}catch(Exception e){
+			log.error("Insert bid_crawling_stats Error");
+			log.error(CurrentTimeUtil.getCurrentTime() + e.getMessage());
+		}
+		return 0;
 	}
 }

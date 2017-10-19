@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.emforce.wonderbox.model.BidCrawlingStats;
 import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.BidInstance;
 import kr.co.emforce.wonderbox.model.BidMachineMng;
@@ -28,4 +29,6 @@ public interface CrawlingDao {
 	public int updateReRun(String processNum);
 	
 	public BidInstance selectBidInstance(String name);
+	
+	public int insertBidCrawlingStats(BidCrawlingStats bidCrawlingStats);
 }
