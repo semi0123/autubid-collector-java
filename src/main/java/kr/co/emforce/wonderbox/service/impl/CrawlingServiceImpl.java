@@ -193,7 +193,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 			while(true){
 				machineNum = bmmArr[random.nextInt(numOfMachine)];
 				curCapacity = processCapacity.get(machineNum);
-				if( kwd.get("process_num") != machineNum && curCapacity < 100){
+				// 프로세스넘버별 130개까지
+				if( kwd.get("process_num") != machineNum && curCapacity < 130){
 					kwd.put("process_num", machineNum);
 					processCapacity.put(machineNum, curCapacity+1);
 					totalCount++;
@@ -256,18 +257,5 @@ public class CrawlingServiceImpl implements CrawlingService{
 			processNum = null;
 		}
 		return crawlingDao.updateReRun(processNum);
-	}
-	
-	@Override
-	public int insertBidCrawlingStats(Map<String, Object> requestBody) {
-		try{
-			BidCrawlingStats bidCrawlingStats = JsonToClassConverter.convert(requestBody,BidCrawlingStats.class);
-			bidCrawlingStats.setCreated_by("SYSTEM").setUpdated_by("SYSTEM");
-			crawlingDao.insertBidCrawlingStats(bidCrawlingStats);
-		}catch(Exception e){
-			log.error("Insert bid_crawling_stats Error");
-			log.error(CurrentTimeUtil.getCurrentTime() + e.getMessage());
-		}
-		return 0;
 	}
 }

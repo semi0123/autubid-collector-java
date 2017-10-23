@@ -50,18 +50,6 @@ public class CrawlingController {
 		return crawlingService.selectForCrawlingModule(inputMap);
 	}
 	
-	@RequestMapping(value="/crawling/stats/", method=RequestMethod.POST)
-	@ResponseBody
-	public void resultPost(
-			@RequestBody Map<String, Object> requestBody,
-			HttpServletRequest request
-			){
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> RESULT POST server_name = " + requestBody.get("server_name"));
-		crawlingService.insertBidCrawlingStats(requestBody);
-		
-		
-	}
-	
 	@RequestMapping(value="/crawling/", method=RequestMethod.POST)
 	@ResponseBody
 	public void post(

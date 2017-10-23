@@ -29,6 +29,4 @@ public interface CrawlingDao {
 	public int updateReRun(String processNum);
 	
 	public BidInstance selectBidInstance(String name);
-	
-	public int insertBidCrawlingStats(BidCrawlingStats bidCrawlingStats);
 }

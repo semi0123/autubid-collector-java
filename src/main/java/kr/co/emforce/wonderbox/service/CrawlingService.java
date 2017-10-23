@@ -17,7 +17,4 @@ public interface CrawlingService {
 	public void crash(String name);
 	
 	public int updateReRun(String processNum);
-	
-	public int insertBidCrawlingStats(Map<String, Object> requestBody);
-	
 }
