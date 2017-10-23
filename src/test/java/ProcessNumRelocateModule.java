@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class NotCrashed {
+public class ProcessNumRelocateModule {
 	
 	private static final String activeBidMachine = "SELECT process_num FROM bid_machine_mngs WHERE status = 'Active'";
 	private static final String pnByKwd = "SELECT kwd_nm, target, process_num FROM bid_favorite_keywords WHERE bid_status = 'Active' AND target is not null GROUP BY kwd_nm, target";
@@ -19,14 +19,14 @@ public class NotCrashed {
 	
 	public static void main(String[] args) {
 		String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-		String HOST = "211.215.18.252"; //args[0];
-		String DB_NAME = "wonderbox_production"; //args[1];
-		String USER_NAME = "wonderbox"; //args[2];
-		String PASSWORD = "wkddb3250"; //args[3];
-//		String HOST = args[0];
-//		String DB_NAME = args[1];
-//		String USER_NAME = args[2];
-//		String PASSWORD = args[3];
+//		String HOST = "211.215.18.252"; //args[0];
+//		String DB_NAME = "wonderbox_production"; //args[1];
+//		String USER_NAME = "wonderbox"; //args[2];
+//		String PASSWORD = "wkddb3250"; //args[3];
+		String HOST = args[0];
+		String DB_NAME = args[1];
+		String USER_NAME = args[2];
+		String PASSWORD = args[3];
 		String DB_URL = "jdbc:mysql://"+ HOST +"/" + DB_NAME +"?useUnicode=true&characterEncoding=utf8";
 		Connection conn = null;
 		Statement stmt = null;
@@ -93,7 +93,8 @@ public class NotCrashed {
 					while(true){
 						machineNum = bmmArr[random.nextInt(numOfMachine)];
 						curCapacity = processCapacity.get(machineNum);
-						if( kwd.get("process_num") != machineNum && curCapacity < 100){
+						// 프로세스넘버별 130개까지
+						if( kwd.get("process_num") != machineNum && curCapacity < 130){
 							kwd.put("process_num", machineNum);
 							processCapacity.put(machineNum, curCapacity+1);
 							totalCount++;

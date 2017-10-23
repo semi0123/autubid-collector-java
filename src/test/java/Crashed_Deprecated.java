@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Crashed {
+public class Crashed_Deprecated {
 	
 	private static final String activeBidMachine = "SELECT process_num FROM bid_machine_mngs WHERE status = 'Active'";
 	private static final String pnByKwd = "SELECT kwd_nm, target, process_num FROM bid_favorite_keywords WHERE bid_status = 'Active' AND target is not null GROUP BY kwd_nm, target";
