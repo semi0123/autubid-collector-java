@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import kr.co.emforce.wonderbox.service.CrawlingStatsService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 
 @Controller
+@CrossOrigin(origins="*")
 public class CrawlingStatsController {
 	
 	private static final Logger log = Logger.getLogger(CrawlingStatsController.class);
