@@ -1,4 +1,4 @@
-package kr.co.emforce.wonderbox.model;
+package kr.co.emforce.wonderbox.model.stats;
 
 import java.sql.Timestamp;
 

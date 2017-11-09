@@ -1,4 +1,4 @@
-package kr.co.emforce.wonderbox.model;
+package kr.co.emforce.wonderbox.model.collector;
 
 public class CrawlingResult {
 	private Integer rank;

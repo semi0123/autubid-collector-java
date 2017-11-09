@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
@@ -21,12 +22,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import kr.co.emforce.wonderbox.dao.CrawlingDao;
-import kr.co.emforce.wonderbox.model.BidCrawlingStats;
-import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
-import kr.co.emforce.wonderbox.model.BidInstance;
-import kr.co.emforce.wonderbox.model.BidMachineMng;
-import kr.co.emforce.wonderbox.model.CrawlingResult;
+import kr.co.emforce.wonderbox.dao.collector.CrawlingDao;
+import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
+import kr.co.emforce.wonderbox.model.collector.BidInstance;
+import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
+import kr.co.emforce.wonderbox.model.collector.CrawlingResult;
 import kr.co.emforce.wonderbox.module.IProcess;
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
@@ -47,6 +47,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	CrawlingDao crawlingDao;
 	
 	@Inject
+	@Resource(name="collectorSqlSessionFactory")
 	private SqlSessionFactory sqlSessionFactory;
 	
 	@Autowired

@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import kr.co.emforce.wonderbox.dao.CrawlingStatsDao;
-import kr.co.emforce.wonderbox.model.BidCrawlingStats;
-import kr.co.emforce.wonderbox.model.BidCrawlingStatsRate;
+import kr.co.emforce.wonderbox.dao.stats.CrawlingStatsDao;
+import kr.co.emforce.wonderbox.model.stats.BidCrawlingStats;
+import kr.co.emforce.wonderbox.model.stats.BidCrawlingStatsRate;
 import kr.co.emforce.wonderbox.service.CrawlingStatsService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;

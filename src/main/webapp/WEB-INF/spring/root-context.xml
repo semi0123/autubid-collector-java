@@ -17,11 +17,11 @@
 						http://www.springframework.org/schema/task/spring-task.xsd">
 						
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<context:component-scan base-package="kr.co.emforce.wonderbox.service.impl, kr.co.emforce.wonderbox.dao"/>
+	<context:component-scan base-package="kr.co.emforce.wonderbox.service.impl, kr.co.emforce.wonderbox.dao.collector, kr.co.emforce.wonderbox.dao.stats"/>
 	<task:annotation-driven/>
 	
-	<!-- MyBatis Mysql -->
-	<bean id="dataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<!-- MyBatis Collector Connection Setting Start -->
+	<bean id="collectorDataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://#{systemProperties['db.host']}/#{systemProperties['db.name']}?useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="username" value="#{systemProperties['db.username']}" />
@@ -33,8 +33,8 @@
 		<!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
 	</bean>
 	
-	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
-        <constructor-arg ref="dataSourceOrigin" />
+	<bean id="collectorDataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="collectorDataSourceOrigin" />
         <property name="logFormatter">
             <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
                 <property name="loggingType" value="MULTI_LINE" />
@@ -43,23 +43,70 @@
         </property>
     </bean>
 	
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="collectorSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource">
-			<ref bean="dataSource" />
+			<ref bean="collectorDataSource" />
 		</property>
-		<property name="typeAliasesPackage" value="kr.co.emforce.wonderbox.model"/>
-		<property name="mapperLocations" value="classpath:mapper/*.xml" />
+		<property name="typeAliasesPackage" value="kr.co.emforce.wonderbox.model.collector"/>
+		<property name="mapperLocations" value="classpath:mapper/collector/*.xml" />
 	</bean>
 	
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-		<property name="basePackage" value="kr.co.emforce.wonderbox.dao" />
+		<property name="sqlSessionFactoryBeanName" value="collectorSqlSessionFactory"/>
+		<property name="basePackage" value="kr.co.emforce.wonderbox.dao.collector" />
 	</bean>
 	
 	<!-- Transaction -->
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-      <property name="dataSource" ref="dataSource"/>
+	<bean id="collectorTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="collectorDataSource"/>
     </bean>
+    <!-- MyBatis Collector Connection Setting End -->
+    
+    
+    
+    <!-- MyBatis Stats Connection Setting Start -->
+	<bean id="statsDataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://#{systemProperties['anStatsDb.host']}/#{systemProperties['anStatsDb.name']}?useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="username" value="#{systemProperties['anStatsDb.username']}" />
+		<property name="password" value="#{systemProperties['anStatsDb.password']}" />
+		<!-- 특정 시간마다 validationQuery를 실행 셋팅 시작 -->
+		<property name="validationQuery" value="select 1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="7200000" />
+		<!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
+	</bean>
+	
+	<bean id="statsDataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="statsDataSourceOrigin" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix" value="SQL         :  "/>
+            </bean>
+        </property>
+    </bean>
+	
+	<bean id="statsSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="statsDataSource" />
+		</property>
+		<property name="typeAliasesPackage" value="kr.co.emforce.wonderbox.model.stats"/>
+		<property name="mapperLocations" value="classpath:mapper/stats/*.xml" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="statsSqlSessionFactory"/>
+		<property name="basePackage" value="kr.co.emforce.wonderbox.dao.stats" />
+	</bean>
+	
+	<!-- Transaction -->
+	<bean id="statsTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="statsDataSource"/>
+    </bean>
+    <!-- MyBatis Stats Connection Setting End -->
+    
+    
     
 	<tx:annotation-driven proxy-target-class="true"/>
 	

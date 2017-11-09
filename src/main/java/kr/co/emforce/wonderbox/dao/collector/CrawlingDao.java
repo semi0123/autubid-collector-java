@@ -1,13 +1,13 @@
-package kr.co.emforce.wonderbox.dao;
+package kr.co.emforce.wonderbox.dao.collector;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import kr.co.emforce.wonderbox.model.BidCrawlingStats;
-import kr.co.emforce.wonderbox.model.BidFavoriteKeyword;
-import kr.co.emforce.wonderbox.model.BidInstance;
-import kr.co.emforce.wonderbox.model.BidMachineMng;
+import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
+import kr.co.emforce.wonderbox.model.collector.BidInstance;
+import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
+import kr.co.emforce.wonderbox.model.stats.BidCrawlingStats;
 
 public interface CrawlingDao {
 	public List<LinkedHashMap<String, Object>> selectKwdNmAndTargetFromBidFavoriteKeywords(Map<String, Object> inputMap);
