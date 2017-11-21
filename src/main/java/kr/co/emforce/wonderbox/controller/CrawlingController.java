@@ -1,5 +1,6 @@
 package kr.co.emforce.wonderbox.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -104,5 +105,9 @@ public class CrawlingController {
 		return returnMap;
 	}
 	
-	
+	@RequestMapping(value="/crash/check/", method=RequestMethod.POST)
+	@ResponseBody
+	public void crashCheck(){
+		
+	}
 }

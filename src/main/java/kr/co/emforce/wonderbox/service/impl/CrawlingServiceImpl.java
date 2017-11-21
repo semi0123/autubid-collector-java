@@ -2,6 +2,7 @@ package kr.co.emforce.wonderbox.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,9 +47,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 	@Inject
 	CrawlingDao crawlingDao;
 	
-	@Inject
 	@Resource(name="collectorSqlSessionFactory")
-	private SqlSessionFactory sqlSessionFactory;
+	private SqlSessionFactory collectorSqlSessionFactory;
+	
+	@Resource(name="statsSqlSessionFactory")
+	private SqlSessionFactory statsSqlSessionFactory;
 	
 	@Autowired
 	JavaMailSender mailSender;
@@ -71,14 +74,27 @@ public class CrawlingServiceImpl implements CrawlingService{
 		List<BidFavoriteKeyword> activeBfkList = null;
 		Map<String, Object> joinSelectMap = null;
 		
+		Date now = new Date();
+		// 스케쥴 월요일부터 시작
+		Integer timePosition = ((now.getDay() == 0) ? 6 : now.getDay()-1) * 24 + now.getHours() + 1; // MYSQL Split Index 1부터 시작
+		Map<String, Object> inputMap = null;
 		try{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
-			activeBfkList = crawlingDao.selectAllFromBidFavoritesKeywords(new BidFavoriteKeyword().setKwd_nm(kwd_nm).setTarget(target).setBid_status("Active").setEmergency_status(emergency_status));
+			activeBfkList = crawlingDao.selectRankKeywordList(new BidFavoriteKeyword().setKwd_nm(kwd_nm)
+																					  .setTarget(target)
+																					  .setEmergency_status(emergency_status));
+			inputMap = new HashMap<String, Object>();
+			inputMap.put("bid_status", "Active");
+			inputMap.put("timePosition", timePosition);
+			// 예약상태가 ON이면서 현재 시간대 순위기반인키워드 추출
+			activeBfkList.addAll(crawlingDao.selectResvStatusActiveKeywordList(inputMap));
+			
+			Integer rank = null;
+			Integer opp_rank = null;
+			
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
-				
 //				log.info(joinSelectMap);
-//				
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
 //				log.info("kwd_nm : " + kwd_nm);
@@ -90,14 +106,17 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
-				Integer rank= 16;
+				
+				
+				rank= 16;
 				try {
-					log.info("rank : " + crawlingMap.get(joinSelectMap.get("site")).getRank());
 					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+					log.info("rank : " + rank);
 				}catch(Exception e) {
 					log.info("===== : " + e.getMessage());
 					rank= 16;
 				}
+				
 				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
@@ -105,9 +124,32 @@ public class CrawlingServiceImpl implements CrawlingService{
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
 				
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
-				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
 //				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
+				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
+				
+				String bid_type = null;
+				if( "Active".equals(joinSelectMap.get("bid_status"))){
+					bid_type = "rank";
+				}else if( "OppActive".equals(joinSelectMap.get("bid_status"))){
+					bid_type = "opp";
+				}
+				
+				if( "OppActive".equals(joinSelectMap.get("bid_status")) ){
+					opp_rank = 16;
+					try{
+						opp_rank = crawlingMap.get(joinSelectMap.get("opp_site")).getRank();
+						log.info("opp rank : " + opp_rank);
+						Integer tempGoalRank = opp_rank + Integer.parseInt(joinSelectMap.get("opp_gap").toString());
+						if( tempGoalRank > rankRange){
+							tempGoalRank = rankRange;
+						}
+						goalRank = tempGoalRank.toString();
+					}catch(Exception e){
+						log.info("===== : " + e.getMessage());
+						opp_rank = 16;
+					}
+				}
 				
 				if( before_rank != rank ) {
 					log.info("TODO Write History :");
@@ -118,7 +160,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 					String type_desc = "자동";
 					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				}
-
 				
 				List<String> args = new ArrayList<String>();
 				args.add(advId);
@@ -131,6 +172,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(checked_at);
 				args.add(maxBidAmt);
 				args.add(emergency_status);
+				args.add(opp_rank.toString());
+				args.add(bid_type);
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
@@ -205,7 +248,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		}
 		
 		// SqlSessionFactory를 이용한 수동 트랜잭션 관리
-		SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+		SqlSession sqlSession = collectorSqlSessionFactory.openSession(ExecutorType.BATCH, false);
 		try{
 			for(Map<String, Object> kw : kwdList){
 				sqlSession.update(CrawlingDao.class.getName() + ".updateProcessNumFromBidFavoriteKeyword", kw);

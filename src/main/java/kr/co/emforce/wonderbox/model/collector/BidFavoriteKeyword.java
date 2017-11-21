@@ -31,6 +31,18 @@ public class BidFavoriteKeyword {
 	private Integer process_num;
 	private String emergency_status;
 	
+	// 2차 추가 컬럼
+	private String bid_cpa_status;
+	private Integer cur_cpa_amt;
+	private Integer goal_cpa_amt;
+	private Integer rec_clk_rnk;
+	private Timestamp rec_clk_at;
+	private Integer cur_opp_rank;
+	private String opp_site;
+	private Integer opp_gap;
+	private String resv_status;
+	private String msg_cd;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -213,6 +225,80 @@ public class BidFavoriteKeyword {
 		this.emergency_status = emergency_status;
 		return this;
 	}
+	
+	
+	
+	
+	public String getBid_cpa_status() {
+		return bid_cpa_status;
+	}
+	public BidFavoriteKeyword setBid_cpa_status(String bid_cpa_status) {
+		this.bid_cpa_status = bid_cpa_status;
+		return this;
+	}
+	public Integer getCur_cpa_amt() {
+		return cur_cpa_amt;
+	}
+	public BidFavoriteKeyword setCur_cpa_amt(Integer cur_cpa_amt) {
+		this.cur_cpa_amt = cur_cpa_amt;
+		return this;
+	}
+	public Integer getGoal_cpa_amt() {
+		return goal_cpa_amt;
+	}
+	public BidFavoriteKeyword setGoal_cpa_amt(Integer goal_cpa_amt) {
+		this.goal_cpa_amt = goal_cpa_amt;
+		return this;
+	}
+	public Integer getRec_clk_rnk() {
+		return rec_clk_rnk;
+	}
+	public BidFavoriteKeyword setRec_clk_rnk(Integer rec_clk_rnk) {
+		this.rec_clk_rnk = rec_clk_rnk;
+		return this;
+	}
+	public Timestamp getRec_clk_at() {
+		return rec_clk_at;
+	}
+	public BidFavoriteKeyword setRec_clk_at(Timestamp rec_clk_at) {
+		this.rec_clk_at = rec_clk_at;
+		return this;
+	}
+	public Integer getCur_opp_rank() {
+		return cur_opp_rank;
+	}
+	public BidFavoriteKeyword setCur_opp_rank(Integer cur_opp_rank) {
+		this.cur_opp_rank = cur_opp_rank;
+		return this;
+	}
+	public String getOpp_site() {
+		return opp_site;
+	}
+	public BidFavoriteKeyword setOpp_site(String opp_site) {
+		this.opp_site = opp_site;
+		return this;
+	}
+	public Integer getOpp_gap() {
+		return opp_gap;
+	}
+	public BidFavoriteKeyword setOpp_gap(Integer opp_gap) {
+		this.opp_gap = opp_gap;
+		return this;
+	}
+	public String getResv_status() {
+		return resv_status;
+	}
+	public BidFavoriteKeyword setResv_status(String resv_status) {
+		this.resv_status = resv_status;
+		return this;
+	}
+	public String getMsg_cd() {
+		return msg_cd;
+	}
+	public BidFavoriteKeyword setMsg_cd(String msg_cd) {
+		this.msg_cd = msg_cd;
+		return this;
+	}
 	@Override
 	public String toString() {
 		return "BidFavoriteKeyword [id=" + id + ", created_by=" + created_by + ", updated_by=" + updated_by
@@ -223,6 +309,9 @@ public class BidFavoriteKeyword {
 				+ ", last_rank_at=" + last_rank_at + ", cur_bid_amt=" + cur_bid_amt + ", before_bid_amt="
 				+ before_bid_amt + ", bid_updated_at=" + bid_updated_at + ", created_at=" + created_at + ", updated_at="
 				+ updated_at + ", site=" + site + ", target=" + target + ", process_num=" + process_num
-				+ ", emergency_status=" + emergency_status + "]";
+				+ ", emergency_status=" + emergency_status + ", bid_cpa_status=" + bid_cpa_status + ", cur_cpa_amt="
+				+ cur_cpa_amt + ", goal_cpa_amt=" + goal_cpa_amt + ", rec_clk_rnk=" + rec_clk_rnk + ", rec_clk_at="
+				+ rec_clk_at + ", cur_opp_rank=" + cur_opp_rank + ", opp_site=" + opp_site + ", opp_gap=" + opp_gap
+				+ ", resv_status=" + resv_status + ", msg_cd=" + msg_cd + "]";
 	}
 }

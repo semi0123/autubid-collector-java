@@ -38,7 +38,7 @@
         <property name="logFormatter">
             <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
                 <property name="loggingType" value="MULTI_LINE" />
-                <property name="sqlPrefix" value="SQL         :  "/>
+                <property name="sqlPrefix" value="Collector SQL         :  "/>
             </bean>
         </property>
     </bean>
@@ -82,7 +82,7 @@
         <property name="logFormatter">
             <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
                 <property name="loggingType" value="MULTI_LINE" />
-                <property name="sqlPrefix" value="SQL         :  "/>
+                <property name="sqlPrefix" value="Stats SQL         :  "/>
             </bean>
         </property>
     </bean>

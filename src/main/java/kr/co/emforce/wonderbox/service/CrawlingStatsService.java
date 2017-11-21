@@ -8,4 +8,6 @@ public interface CrawlingStatsService {
 	public int insertBidCrawlingStats(Map<String, Object> requestBody);
 	
 	public Map<String, BidCrawlingStatsRate> selectBidCrawlingStatsRate();
+	
+	
 }

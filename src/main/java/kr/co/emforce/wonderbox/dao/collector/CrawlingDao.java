@@ -29,4 +29,12 @@ public interface CrawlingDao {
 	public int updateReRun(String processNum);
 	
 	public BidInstance selectBidInstance(String name);
+	
+	
+	
+	
+	
+	public List<BidFavoriteKeyword> selectRankKeywordList(BidFavoriteKeyword bfk);
+	
+	public List<BidFavoriteKeyword> selectResvStatusActiveKeywordList(Map<String, Object> inputMap);
 }

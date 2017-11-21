@@ -9,4 +9,6 @@ public interface CrawlingStatsDao {
 	public int insertBidCrawlingStats(BidCrawlingStats bidCrawlingStats);
 	
 	public List<BidCrawlingStatsRate> selectBidCrawlingStatsRate();
+	
+	public List<BidCrawlingStats> selectErrorCheckEvery30Minutes();
 }

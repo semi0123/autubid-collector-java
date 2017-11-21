@@ -51,4 +51,14 @@
 	      WITH ROLLUP
 	</select>
 	
+	
+	<select id="selectErrorCheckEvery30Minutes" resultType="BidCrawlingStats">
+		SELECT server_name, sum(error_cnt) error_cnt
+		  FROM bid_crawling_stats
+		 WHERE (NOW() - INTERVAL 30 MINUTE) &lt; scheduled_at
+		       AND scheduled_at &lt;= NOW()
+		group by server_name
+		having error_cnt >= 10
+	</select>
+	
 </mapper>
