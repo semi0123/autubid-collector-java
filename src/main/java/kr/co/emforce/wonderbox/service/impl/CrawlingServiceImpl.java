@@ -86,6 +86,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			inputMap = new HashMap<String, Object>();
 			inputMap.put("bid_status", "Active");
 			inputMap.put("timePosition", timePosition);
+			inputMap.put("emergency_status", emergency_status);
 			// 예약상태가 ON이면서 현재 시간대 순위기반인키워드 추출
 			activeBfkList.addAll(crawlingDao.selectResvStatusActiveKeywordList(inputMap));
 			

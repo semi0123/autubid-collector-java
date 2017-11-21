@@ -176,7 +176,8 @@
 		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status
 			      FROM bid_favorite_keywords
 			     WHERE resv_status = 'Active'
-	               AND bid_schedule IS NOT NULL) bfk,
+	                   AND emergency_status = #{emergency_status}
+	                   AND bid_schedule IS NOT NULL) bfk,
 	           adv_infos ai,
 	           bid_favorites bf 
 	     WHERE bst.kwd_id = bfk.kwd_id 
