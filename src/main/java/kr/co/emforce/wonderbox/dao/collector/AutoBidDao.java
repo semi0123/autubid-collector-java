@@ -39,4 +39,6 @@ public interface AutoBidDao {
 	public List<BidFavoriteKeyword> selectResvStatusActiveKeywordList(Map<String, Object> inputMap);
 	
 	public List<BidFavoriteKeyword> selectCurrentSchedule0ResvStatusActiveKeywordList(Map<String, Object> inputMap);
+	
+	public List<LinkedHashMap<String, Object>> selectCrawlingRankKwdList(Map<String, Object> inputMap);
 }

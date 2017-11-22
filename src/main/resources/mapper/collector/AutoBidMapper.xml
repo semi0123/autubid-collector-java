@@ -48,6 +48,7 @@
 	  GROUP BY kwd_nm, target
 	</select>
 	
+	
 	<select id="selectOneForBidAmtChangeModule" parameterType="String" resultType="HashMap">
 		SELECT bf.advs_id adv_id,
 			   bfk.kwd_id, 
@@ -158,6 +159,52 @@
 	</update>
 	
 	
+	
+	
+	
+	
+	
+	
+	<select id="selectCrawlingRankKwdList" parameterType="Map" resultType="HashMap">
+		SELECT bfk.kwd_nm, bfk.target, bfk.process_num, bfk.emergency_status
+		  FROM (SELECT kwd_nm,
+					   target
+				  FROM bid_favorite_keywords
+				 WHERE (bid_status = 'Active' OR bid_status = 'OppActive')
+				 	   AND emergency_status = #{emergency_status}
+				 	   AND process_num = #{process_num}
+				 	   AND resv_status = 'Inactive'
+			  GROUP BY kwd_nm, target
+			  	 UNION
+			  	SELECT kwd_nm, target
+		          FROM (SELECT kwd_id, color
+						  FROM bid_schedule_types
+					     WHERE bid_status = 'Active') bct,
+					   (SELECT kwd_id, kwd_nm, target, process_num, emergency_status, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color
+					      FROM bid_favorite_keywords
+					     WHERE resv_status = 'Active'
+					   	       AND bid_status = 'Inactive'
+					           AND emergency_status = #{emergency_status}
+					           AND process_num = #{process_num}
+					           AND bid_schedule IS NOT NULL) bfk
+				 WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color
+			  GROUP BY kwd_nm, target
+		         UNION
+				SELECT kwd_nm, target
+		          FROM bid_favorite_keywords
+				 WHERE process_num = #{process_num}
+				 	   AND emergency_status = #{emergency_status}
+				       AND resv_status = 'Active'
+					   AND bid_schedule IS NOT NULL
+					   AND (bid_status = 'Active' OR bid_status = 'OppActive')
+		               AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0
+			  GROUP BY kwd_nm, target) ut,
+			   bid_favorite_keywords bfk
+		 WHERE bfk.kwd_nm = ut.kwd_nm AND bfk.target = ut.target
+	  GROUP BY kwd_nm, target, process_num, emergency_status
+	</select>
+
+	
 	<!-- 
 		bid_status가 Active이고
 		resv_status가 Inactive인 키워드
@@ -208,7 +255,7 @@
 		  		AND resv_status = 'Active'
 		  		AND emergency_status = #{emergency_status}
 		  		AND bid_schedule IS NOT NULL
-				AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',1),',',-1) = 0
+				AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0
 	</select>
 	
 	

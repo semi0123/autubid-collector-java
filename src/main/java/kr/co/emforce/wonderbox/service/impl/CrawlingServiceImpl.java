@@ -33,6 +33,7 @@ import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.HistoryUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
+import kr.co.emforce.wonderbox.util.TimePositionMaker;
 
 
 
@@ -58,7 +59,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Override
 	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
-		return autoBidDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
+		return autoBidDao.selectCrawlingRankKwdList(inputMap);
 	}
 	
 	@Override
@@ -74,9 +75,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 		List<BidFavoriteKeyword> activeBfkList = null;
 		Map<String, Object> joinSelectMap = null;
 		
-		Date now = new Date();
-		// 스케쥴 월요일부터 시작
-		Integer timePosition = ((now.getDay() == 0) ? 6 : now.getDay()-1) * 24 + now.getHours() + 1; // MYSQL Split Index 1부터 시작
 		Map<String, Object> inputMap = null;
 		try{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
@@ -85,7 +83,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 																					  .setEmergency_status(emergency_status));
 			inputMap = new HashMap<String, Object>();
 			inputMap.put("bid_status", "Active");
-			inputMap.put("timePosition", timePosition);
+			inputMap.put("timePosition", TimePositionMaker.makeTimePosition());
 			inputMap.put("emergency_status", emergency_status);
 			// 키워드 bid_status가 Inactive이면서, resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
 			activeBfkList.addAll(autoBidDao.selectResvStatusActiveKeywordList(inputMap));

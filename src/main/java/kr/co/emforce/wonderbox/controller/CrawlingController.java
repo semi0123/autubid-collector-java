@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
+import kr.co.emforce.wonderbox.util.TimePositionMaker;
 
 @Controller
 @CrossOrigin(origins="*")
@@ -46,6 +47,7 @@ public class CrawlingController {
 		inputMap.put("bid_status", bid_status);
 		inputMap.put("target", target);
 		inputMap.put("caller", caller);
+		inputMap.put("timePosition", TimePositionMaker.makeTimePosition());
 		inputMap.put("emergency_status", emergency_status);
 		
 		return crawlingService.selectForCrawlingModule(inputMap);
