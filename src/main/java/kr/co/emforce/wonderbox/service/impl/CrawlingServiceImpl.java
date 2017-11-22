@@ -77,14 +77,23 @@ public class CrawlingServiceImpl implements CrawlingService{
 		
 		Map<String, Object> inputMap = null;
 		try{
-			inputMap = new HashMap<String, Object>();
-			inputMap.put("kwd_nm", kwd_nm);
-			inputMap.put("target", target);
-			inputMap.put("emergency_status", emergency_status);
-			inputMap.put("timePosition", TimePositionMaker.makeTimePosition());
-			
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
-			activeBfkList = autoBidDao.selectCrawledKwdList(inputMap);
+			activeBfkList = autoBidDao.selectRankKeywordList(new BidFavoriteKeyword().setKwd_nm(kwd_nm)
+																					  .setTarget(target)
+																					  .setEmergency_status(emergency_status));
+			inputMap = new HashMap<String, Object>();
+			inputMap.put("bid_status", "Active");
+			inputMap.put("timePosition", TimePositionMaker.makeTimePosition());
+			inputMap.put("emergency_status", emergency_status);
+			// 키워드 bid_status가 Inactive이면서, resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
+			activeBfkList.addAll(autoBidDao.selectResvStatusActiveKeywordList(inputMap));
+
+			// resv_status가 Active이고, 현재 스케쥴시간대가 0이면서, bid_status가 Inactive아닌 키워드 목록
+			inputMap.put("bid_status", "Active");
+			activeBfkList.addAll(autoBidDao.selectCurrentSchedule0ResvStatusActiveKeywordList(inputMap));
+			inputMap.put("bid_status", "OppActive");
+			activeBfkList.addAll(autoBidDao.selectCurrentSchedule0ResvStatusActiveKeywordList(inputMap));
+			inputMap.clear();
 			
 			Integer rank = null;
 			Integer opp_rank = null;

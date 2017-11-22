@@ -159,12 +159,6 @@
 	</update>
 	
 	
-	
-	
-	
-	
-	
-	
 	<select id="selectCrawlingRankKwdList" parameterType="Map" resultType="HashMap">
 		SELECT bfk.kwd_nm, bfk.target, bfk.process_num, bfk.emergency_status
 		  FROM (SELECT kwd_nm,
@@ -205,40 +199,58 @@
 	</select>
 
 	
-	
-	<select id="selectCrawledKwdList" parameterType="Map" resultType="BidFavoriteKeyword">
-				SELECT *
-				  FROM bid_favorite_keywords bfk,
-				  	   (SELECT kwd_id
-						  FROM bid_favorite_keywords
-						 WHERE kwd_nm = #{kwd_nm}
-						       AND target = #{target}
-						       AND (bid_status = 'Active' OR bid_status = 'OppActive')
-						       AND emergency_status = #{emergency_status}
-						       AND resv_status = 'Inactive'
-						 UNION
-						SELECT bst.kwd_id
-						  FROM (SELECT kwd_id, color
-							      FROM bid_schedule_types
-							     WHERE bid_status = 'Active') bst,
-							   (SELECT kwd_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color
-							      FROM bid_favorite_keywords
-							     WHERE resv_status = 'Active'
-							     	   AND bid_status = 'Inactive'
-							           AND emergency_status = #{emergency_status}
-							           AND bid_schedule IS NOT NULL) bfk
-						 WHERE bst.kwd_id = bfk.kwd_id 
-							   AND bst.color = bfk.color
-						 UNION
-						SELECT kwd_id
-						  FROM bid_favorite_keywords
-						 WHERE (bid_status = 'Active' OR bid_status = 'OppActive')
-							   AND resv_status = 'Active'
-						       AND emergency_status = #{emergency_status}
-						       AND bid_schedule IS NOT NULL
-						       AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0) ut
-				 WHERE bfk.kwd_id = ut.kwd_id		   
+	<!-- 
+		bid_status가 Active이고
+		resv_status가 Inactive인 키워드
+	 -->
+	<select id="selectRankKeywordList" parameterType="BidFavoriteKeyword" resultType="BidFavoriteKeyword">
+		SELECT *
+		  FROM bid_favorite_keywords
+		 WHERE kwd_nm = #{kwd_nm}
+		       AND target = #{target}
+		       AND (bid_status = 'Active' OR bid_status = 'OppActive')
+		       AND emergency_status = #{emergency_status}
+		       AND resv_status = 'Inactive'
 	</select>
-
+	
+	<!-- 
+		bid_status가 Inactive이고 
+		resv_status가 Active이며
+		현재 시간의 조건이 0이 아닌 키워드
+	 -->
+	<select id="selectResvStatusActiveKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
+	    SELECT bst.kwd_id, ai.adv_id, ai.na_account_ser, bst.color, bst.bid_status, bst.goal_rank, bst.max_bid_amt, bst.goal_cpa, bfk.rank, bfk.emergency_status, bfk.site
+	  	  FROM (SELECT kwd_id, color, bid_status, goal_rank, max_bid_amt, goal_cpa
+			      FROM bid_schedule_types
+			     WHERE bid_status = #{bid_status}) bst,
+		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status
+			      FROM bid_favorite_keywords
+			     WHERE resv_status = 'Active'
+			     	   AND bid_status = 'Inactive'
+	                   AND emergency_status = #{emergency_status}
+	                   AND bid_schedule IS NOT NULL) bfk,
+	           adv_infos ai,
+	           bid_favorites bf 
+	     WHERE bst.kwd_id = bfk.kwd_id 
+	           AND bst.color = bfk.color 
+	           AND bf.id = bfk.bid_favorites_id 
+	           AND bf.advs_id = ai.adv_id
+	</select>
+	
+	<!-- 
+		bid_status가 Inactive가 아니고
+		resv_status가 Active이며
+		현재 시간의 조건이 0인 키워드
+	 -->
+	<select id="selectCurrentSchedule0ResvStatusActiveKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
+		 SELECT *
+		   FROM bid_favorite_keywords
+		  WHERE bid_status = #{bid_status}
+		  		AND resv_status = 'Active'
+		  		AND emergency_status = #{emergency_status}
+		  		AND bid_schedule IS NOT NULL
+				AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0
+	</select>
+	
 	
 </mapper>

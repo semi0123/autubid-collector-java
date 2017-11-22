@@ -1,5 +1,7 @@
 package kr.co.emforce.wonderbox.service;
 
-public interface CpaService {
+import java.util.Map;
 
+public interface CpaService {
+	public void runBidModule();
 }
