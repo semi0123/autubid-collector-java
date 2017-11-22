@@ -23,7 +23,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import kr.co.emforce.wonderbox.dao.collector.CrawlingDao;
+import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.collector.BidInstance;
 import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
@@ -45,7 +45,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	ServletContext ctx;
 	
 	@Inject
-	CrawlingDao crawlingDao;
+	AutoBidDao autoBidDao;
 	
 	@Resource(name="collectorSqlSessionFactory")
 	private SqlSessionFactory collectorSqlSessionFactory;
@@ -58,7 +58,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Override
 	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
-		return crawlingDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
+		return autoBidDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
 	}
 	
 	@Override
@@ -80,21 +80,28 @@ public class CrawlingServiceImpl implements CrawlingService{
 		Map<String, Object> inputMap = null;
 		try{
 			crawlingMap = JsonToClassConverter.convertToIdMap((ArrayList<Map<String, Object>>) requestBody.get("result_rank"), "site", CrawlingResult.class);
-			activeBfkList = crawlingDao.selectRankKeywordList(new BidFavoriteKeyword().setKwd_nm(kwd_nm)
+			activeBfkList = autoBidDao.selectRankKeywordList(new BidFavoriteKeyword().setKwd_nm(kwd_nm)
 																					  .setTarget(target)
 																					  .setEmergency_status(emergency_status));
 			inputMap = new HashMap<String, Object>();
 			inputMap.put("bid_status", "Active");
 			inputMap.put("timePosition", timePosition);
 			inputMap.put("emergency_status", emergency_status);
-			// 예약상태가 ON이면서 현재 시간대 순위기반인키워드 추출
-			activeBfkList.addAll(crawlingDao.selectResvStatusActiveKeywordList(inputMap));
+			// 키워드 bid_status가 Inactive이면서, resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
+			activeBfkList.addAll(autoBidDao.selectResvStatusActiveKeywordList(inputMap));
+
+			// resv_status가 Active이고, 현재 스케쥴시간대가 0이면서, bid_status가 Inactive아닌 키워드 목록
+			inputMap.put("bid_status", "Active");
+			activeBfkList.addAll(autoBidDao.selectCurrentSchedule0ResvStatusActiveKeywordList(inputMap));
+			inputMap.put("bid_status", "OppActive");
+			activeBfkList.addAll(autoBidDao.selectCurrentSchedule0ResvStatusActiveKeywordList(inputMap));
+			inputMap.clear();
 			
 			Integer rank = null;
 			Integer opp_rank = null;
 			
 			for(BidFavoriteKeyword bfk : activeBfkList){
-				joinSelectMap = crawlingDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
+				joinSelectMap = autoBidDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
 //				log.info(joinSelectMap);
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
@@ -191,7 +198,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			
 			try {
 				
-				int search_ad_id = crawlingDao.selectSearchAdId(kwd_nm);
+				int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
 				log.info("rank history search_ad_id : " + search_ad_id);
 				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
 				
@@ -217,7 +224,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
 		inputMap.put("status", "Active");
-		List<BidMachineMng> bmmList = crawlingDao.selectStatusFromBidMachine(inputMap);
+		List<BidMachineMng> bmmList = autoBidDao.selectStatusFromBidMachine(inputMap);
 		inputMap.clear();
 		Integer[] bmmArr = new Integer[bmmList.size()];
 		Map<Integer, Integer> processCapacity = new HashMap<Integer, Integer>();
@@ -229,7 +236,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			processCapacity.put(bmmArr[i], 0);
 		}
 		
-		List<LinkedHashMap<String, Object>> kwdList = crawlingDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
+		List<LinkedHashMap<String, Object>> kwdList = autoBidDao.selectKwdNmAndTargetFromBidFavoriteKeywords(inputMap);
 		
 		Integer machineNum = null;
 		Random random = new Random();
@@ -252,7 +259,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		SqlSession sqlSession = collectorSqlSessionFactory.openSession(ExecutorType.BATCH, false);
 		try{
 			for(Map<String, Object> kw : kwdList){
-				sqlSession.update(CrawlingDao.class.getName() + ".updateProcessNumFromBidFavoriteKeyword", kw);
+				sqlSession.update(AutoBidDao.class.getName() + ".updateProcessNumFromBidFavoriteKeyword", kw);
 			}
 			sqlSession.commit();
 			log.info(CurrentTimeUtil.getCurrentTime() + "(수동) 자동입찰 키워드 재배정 완료 / 업데이트 된 키워드 수 : " + totalCount);
@@ -276,12 +283,12 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Override
 	public void crash(String name) {
-		if( crawlingDao.updateCrash(name) == 1 ){
+		if( autoBidDao.updateCrash(name) == 1 ){
 			Map<String, Object> inputMap = new HashMap<String, Object>();
 			inputMap.put("name", name);
 			StringBuffer content = new StringBuffer();
 			content.append("\n\n* 해당 메일은 입찰 솔루션 오류 발생시 자동으로 발송되는 메일입니다.\n\n");
-			BidInstance instance = crawlingDao.selectBidInstance(name);
+			BidInstance instance = autoBidDao.selectBidInstance(name);
 			content.append(instance.getDesc()+"\n\n")
 				   .append("name : " + instance.getName() + "\n\n")
 				   .append("label : " + instance.getLabel() + "\n\n")
@@ -301,6 +308,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 		if( "All".equals(processNum) ){
 			processNum = null;
 		}
-		return crawlingDao.updateReRun(processNum);
+		return autoBidDao.updateReRun(processNum);
 	}
 }

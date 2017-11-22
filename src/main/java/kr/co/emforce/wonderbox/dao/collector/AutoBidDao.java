@@ -9,7 +9,7 @@ import kr.co.emforce.wonderbox.model.collector.BidInstance;
 import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
 import kr.co.emforce.wonderbox.model.stats.BidCrawlingStats;
 
-public interface CrawlingDao {
+public interface AutoBidDao {
 	public List<LinkedHashMap<String, Object>> selectKwdNmAndTargetFromBidFavoriteKeywords(Map<String, Object> inputMap);
 	
 	public List<BidFavoriteKeyword> selectAllFromBidFavoritesKeywords(BidFavoriteKeyword bfk);
@@ -37,4 +37,6 @@ public interface CrawlingDao {
 	public List<BidFavoriteKeyword> selectRankKeywordList(BidFavoriteKeyword bfk);
 	
 	public List<BidFavoriteKeyword> selectResvStatusActiveKeywordList(Map<String, Object> inputMap);
+	
+	public List<BidFavoriteKeyword> selectCurrentSchedule0ResvStatusActiveKeywordList(Map<String, Object> inputMap);
 }

@@ -40,7 +40,6 @@ public class CrawlingStatsController {
 	public Object statsRate(
 			HttpServletRequest request
 			){
-		//log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> GET STATS RATE server_name = " + requestBody.get("server_name"));
 		return crawlingStatsService.selectBidCrawlingStatsRate();
 	}
 }
