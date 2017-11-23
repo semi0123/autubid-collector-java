@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import kr.co.emforce.wonderbox.controller.CrawlingController;
 import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.service.CpaService;
@@ -19,6 +21,8 @@ import kr.co.emforce.wonderbox.util.TimePositionMaker;
 @Service
 public class CpaServiceImpl implements CpaService{
 
+	private static final Logger log = Logger.getLogger(CpaServiceImpl.class);
+	
 	@Inject
 	AutoBidDao autoBidDao;
 	
@@ -42,7 +46,7 @@ public class CpaServiceImpl implements CpaService{
 		
 		for(BidFavoriteKeyword bfk : activeBfkList){
 			todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
-			
+
 			args.clear();
 			args.add(bfk.getAdv_id());
 			args.add(bfk.getNa_account_ser());
@@ -56,8 +60,7 @@ public class CpaServiceImpl implements CpaService{
 			args.add(String.valueOf(bfk.getMax_bid_amt()));
 			args.add(bfk.getEmergency_status());
 			
-			System.out.println(args);
-		
+			log.info(args);
 		}
 		
 	}
