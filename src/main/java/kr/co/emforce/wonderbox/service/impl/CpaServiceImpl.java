@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import kr.co.emforce.wonderbox.controller.CrawlingController;
 import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.service.CpaService;

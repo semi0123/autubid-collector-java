@@ -2,7 +2,6 @@ package kr.co.emforce.wonderbox.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,8 +50,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 	@Resource(name="collectorSqlSessionFactory")
 	private SqlSessionFactory collectorSqlSessionFactory;
 	
-	@Resource(name="statsSqlSessionFactory")
-	private SqlSessionFactory statsSqlSessionFactory;
+//	@Resource(name="statsSqlSessionFactory")
+//	private SqlSessionFactory statsSqlSessionFactory;
 	
 	@Autowired
 	JavaMailSender mailSender;

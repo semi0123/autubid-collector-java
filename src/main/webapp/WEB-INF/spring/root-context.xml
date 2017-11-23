@@ -69,16 +69,15 @@
     
     
     <!-- MyBatis Stats Connection Setting Start -->
+	<!-- 
 	<bean id="statsDataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://#{systemProperties['anStatsDb.host']}/#{systemProperties['anStatsDb.name']}?useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="username" value="#{systemProperties['anStatsDb.username']}" />
 		<property name="password" value="#{systemProperties['anStatsDb.password']}" />
-		<!-- 특정 시간마다 validationQuery를 실행 셋팅 시작 -->
 		<property name="validationQuery" value="select 1" />
 		<property name="testWhileIdle" value="true" />
 		<property name="timeBetweenEvictionRunsMillis" value="7200000" />
-		<!-- 특정 시간마다 validationQuery를 실행 셋팅 끝 -->
 	</bean>
 	
 	<bean id="statsDataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
@@ -104,10 +103,10 @@
 		<property name="basePackage" value="kr.co.emforce.wonderbox.dao.stats" />
 	</bean>
 	
-	<!-- Transaction -->
 	<bean id="statsTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
       <property name="dataSource" ref="statsDataSource"/>
     </bean>
+    -->
     <!-- MyBatis Stats Connection Setting End -->
     
     
