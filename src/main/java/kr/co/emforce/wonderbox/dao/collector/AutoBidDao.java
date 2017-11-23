@@ -32,13 +32,18 @@ public interface AutoBidDao {
 	
 	
 	
-	
-	
-	public List<BidFavoriteKeyword> selectRankKeywordList(BidFavoriteKeyword bfk);
-	
-	public List<BidFavoriteKeyword> selectResvStatusActiveKeywordList(Map<String, Object> inputMap);
-	
-	public List<BidFavoriteKeyword> selectCurrentSchedule0ResvStatusActiveKeywordList(Map<String, Object> inputMap);
-	
+	// 크롤링 해올 키워드 목록
 	public List<LinkedHashMap<String, Object>> selectCrawlingRankKwdList(Map<String, Object> inputMap);
+
+	// 순위기반용
+	public List<BidFavoriteKeyword> selectResvInactRankKeywordList(BidFavoriteKeyword bfk);
+	
+	// Cpa용
+	public List<BidFavoriteKeyword> selectResvInactCpaKeywordList(Map<String, Object> inputMap);
+	
+	// 공통사용
+	public List<BidFavoriteKeyword> selectResvActCur0KeywordList(Map<String, Object> inputMap);
+	public List<BidFavoriteKeyword> selectResvActKeywordList(Map<String, Object> inputMap);
+	
+	
 }

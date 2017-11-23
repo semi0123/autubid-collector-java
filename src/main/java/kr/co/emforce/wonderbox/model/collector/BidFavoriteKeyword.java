@@ -31,6 +31,11 @@ public class BidFavoriteKeyword {
 	private Integer process_num;
 	private String emergency_status;
 	
+	// 조인컬럼
+	private String adv_id;
+	private String na_account_ser;
+	
+	
 	// 2차 추가 컬럼
 	private String bid_cpa_status;
 	private Integer cur_cpa_amt;
@@ -43,6 +48,22 @@ public class BidFavoriteKeyword {
 	private String resv_status;
 	private String msg_cd;
 	
+	
+	
+	public String getAdv_id() {
+		return adv_id;
+	}
+	public BidFavoriteKeyword setAdv_id(String adv_id) {
+		this.adv_id = adv_id;
+		return this;
+	}
+	public String getNa_account_ser() {
+		return na_account_ser;
+	}
+	public BidFavoriteKeyword setNa_account_ser(String na_account_ser) {
+		this.na_account_ser = na_account_ser;
+		return this;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -309,9 +330,10 @@ public class BidFavoriteKeyword {
 				+ ", last_rank_at=" + last_rank_at + ", cur_bid_amt=" + cur_bid_amt + ", before_bid_amt="
 				+ before_bid_amt + ", bid_updated_at=" + bid_updated_at + ", created_at=" + created_at + ", updated_at="
 				+ updated_at + ", site=" + site + ", target=" + target + ", process_num=" + process_num
-				+ ", emergency_status=" + emergency_status + ", bid_cpa_status=" + bid_cpa_status + ", cur_cpa_amt="
-				+ cur_cpa_amt + ", goal_cpa_amt=" + goal_cpa_amt + ", rec_clk_rnk=" + rec_clk_rnk + ", rec_clk_at="
-				+ rec_clk_at + ", cur_opp_rank=" + cur_opp_rank + ", opp_site=" + opp_site + ", opp_gap=" + opp_gap
-				+ ", resv_status=" + resv_status + ", msg_cd=" + msg_cd + "]";
+				+ ", emergency_status=" + emergency_status + ", adv_id=" + adv_id + ", na_account_ser=" + na_account_ser
+				+ ", bid_cpa_status=" + bid_cpa_status + ", cur_cpa_amt=" + cur_cpa_amt + ", goal_cpa_amt="
+				+ goal_cpa_amt + ", rec_clk_rnk=" + rec_clk_rnk + ", rec_clk_at=" + rec_clk_at + ", cur_opp_rank="
+				+ cur_opp_rank + ", opp_site=" + opp_site + ", opp_gap=" + opp_gap + ", resv_status=" + resv_status
+				+ ", msg_cd=" + msg_cd + "]";
 	}
 }

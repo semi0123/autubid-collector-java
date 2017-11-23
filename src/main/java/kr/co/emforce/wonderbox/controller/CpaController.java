@@ -27,6 +27,6 @@ public class CpaController {
 		
 		cpaService.runBidModule();
 		
-		return true;
+		return null;
 	}
 }

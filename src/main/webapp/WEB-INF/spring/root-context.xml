@@ -20,6 +20,10 @@
 	<context:component-scan base-package="kr.co.emforce.wonderbox.service.impl, kr.co.emforce.wonderbox.dao.collector, kr.co.emforce.wonderbox.dao.stats"/>
 	<task:annotation-driven/>
 	
+	<bean id="anStatsDNS" class="java.lang.String">
+		<constructor-arg value="#{ systemProperties['anStats.DNS'] }"/>
+	</bean>
+	
 	<!-- MyBatis Collector Connection Setting Start -->
 	<bean id="collectorDataSourceOrigin" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />

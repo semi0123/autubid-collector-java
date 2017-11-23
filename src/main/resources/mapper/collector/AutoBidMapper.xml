@@ -203,31 +203,67 @@
 		bid_status가 Active이고
 		resv_status가 Inactive인 키워드
 	 -->
-	<select id="selectRankKeywordList" parameterType="BidFavoriteKeyword" resultType="BidFavoriteKeyword">
-		SELECT *
-		  FROM bid_favorite_keywords
-		 WHERE kwd_nm = #{kwd_nm}
-		       AND target = #{target}
-		       AND (bid_status = 'Active' OR bid_status = 'OppActive')
-		       AND emergency_status = #{emergency_status}
-		       AND resv_status = 'Inactive'
+	<select id="selectResvInactRankKeywordList" parameterType="BidFavoriteKeyword" resultType="BidFavoriteKeyword">
+		SELECT ai.adv_id, 
+	    	   ai.na_account_ser, 
+	    	   bfk.*
+		  FROM (SELECT *
+				  FROM bid_favorite_keywords
+				 WHERE kwd_nm = #{kwd_nm}
+				       AND target = #{target}
+				       AND (bid_status = 'Active' OR bid_status = 'OppActive')
+				       AND emergency_status = #{emergency_status}
+				       AND resv_status = 'Inactive') bfk,
+			   adv_infos ai,
+	           bid_favorites bf
+	     WHERE bf.id = bfk.bid_favorites_id 
+	           AND bf.advs_id = ai.adv_id     
 	</select>
+	<select id="selectResvInactCpaKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
+		SELECT ai.adv_id, 
+	    	   ai.na_account_ser, 
+	    	   bfk.*
+		  FROM (SELECT *
+		  		  FROM bid_favorite_keywords
+		 		 WHERE bid_status = 'CpaActive'
+		       	   AND resv_status = 'Inactive') bfk,
+		       adv_infos ai,
+	           bid_favorites bf
+	     WHERE bf.id = bfk.bid_favorites_id 
+	           AND bf.advs_id = ai.adv_id
+	</select>
+	
 	
 	<!-- 
 		bid_status가 Inactive이고 
 		resv_status가 Active이며
 		현재 시간의 조건이 0이 아닌 키워드
 	 -->
-	<select id="selectResvStatusActiveKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
-	    SELECT bst.kwd_id, ai.adv_id, ai.na_account_ser, bst.color, bst.bid_status, bst.goal_rank, bst.max_bid_amt, bst.goal_cpa, bfk.rank, bfk.emergency_status, bfk.site
+	<select id="selectResvActKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
+	    SELECT bst.kwd_id, 
+	    	   ai.adv_id, 
+	    	   ai.na_account_ser, 
+	    	   bst.color, 
+	    	   bst.bid_status, 
+	    	   bst.goal_rank, 
+	    	   bst.max_bid_amt, 
+	    	   bst.goal_cpa, 
+	    	   bfk.rank, 
+	    	   bfk.emergency_status, 
+	    	   bfk.site, 
+	    	   bfk.target,
+	    	   bfk.rec_clk_rnk,
+	    	   bfk.rec_clk_at
 	  	  FROM (SELECT kwd_id, color, bid_status, goal_rank, max_bid_amt, goal_cpa
 			      FROM bid_schedule_types
 			     WHERE bid_status = #{bid_status}) bst,
-		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status
+		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status, target, rec_clk_rnk, rec_clk_at 
 			      FROM bid_favorite_keywords
 			     WHERE resv_status = 'Active'
 			     	   AND bid_status = 'Inactive'
+			     	   <if test="emergency_status != null">
 	                   AND emergency_status = #{emergency_status}
+			     	   </if>
 	                   AND bid_schedule IS NOT NULL) bfk,
 	           adv_infos ai,
 	           bid_favorites bf 
@@ -242,15 +278,22 @@
 		resv_status가 Active이며
 		현재 시간의 조건이 0인 키워드
 	 -->
-	<select id="selectCurrentSchedule0ResvStatusActiveKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
-		 SELECT *
-		   FROM bid_favorite_keywords
-		  WHERE bid_status = #{bid_status}
-		  		AND resv_status = 'Active'
-		  		AND emergency_status = #{emergency_status}
-		  		AND bid_schedule IS NOT NULL
-				AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0
+	<select id="selectResvActCur0KeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
+		 SELECT ai.adv_id, 
+	    	   ai.na_account_ser, 
+	    	   bfk.*
+		  FROM (SELECT *
+				  FROM bid_favorite_keywords
+				 WHERE bid_status = #{bid_status}
+				       AND resv_status = 'Active'
+				 	   <if test="emergency_status != null">
+				  	   AND emergency_status = #{emergency_status}
+				  	   </if>
+				  	   AND bid_schedule IS NOT NULL
+					   AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0) bfk,
+			   adv_infos ai,
+	           bid_favorites bf
+	     WHERE bf.id = bfk.bid_favorites_id 
+	           AND bf.advs_id = ai.adv_id	   
 	</select>
-	
-	
 </mapper>
