@@ -12,4 +12,5 @@ public interface IProcess {
   public static final String PRODUCTION = "production";
 
   public final String AUTO_BID_WORKER = "autobid-worker.sh";
+  public final String CPA_AUTO_BID_WORKER = "cpa_autobid-worker.sh";
 }
