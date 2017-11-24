@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -198,6 +199,13 @@ public class CrawlingServiceImpl implements CrawlingService{
 				int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
 				log.info("rank history search_ad_id : " + search_ad_id);
 				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
+				
+				List<String> rank_args = new ArrayList<String>();
+				rank_args.add(StringUtils.substring(checked_at, 0, 10));
+				rank_args.add(String.valueOf(search_ad_id));
+				rank_args.add(target);
+				
+				runModule(IProcess.MODULES_DIR, IProcess.KWD_RANK_HISTORIES_WORKER, rank_args);
 				
 			}catch(Exception e) {
 				log.info("rank history error : " + e.getMessage());

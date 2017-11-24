@@ -13,4 +13,5 @@ public interface IProcess {
 
   public final String AUTO_BID_WORKER = "autobid-worker.sh";
   public final String CPA_AUTO_BID_WORKER = "cpa_autobid-worker.sh";
+  public final String KWD_RANK_HISTORIES_WORKER = "kwd_rank_histories-worker.sh";
 }
