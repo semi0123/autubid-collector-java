@@ -23,6 +23,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.collector.BidInstance;
@@ -99,7 +101,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 			Integer opp_rank = null;
 			
 			for(BidFavoriteKeyword bfk : activeBfkList){
-				joinSelectMap = autoBidDao.selectOneForBidAmtChangeModule(bfk.getKwd_id());
+				joinSelectMap = new ObjectMapper().convertValue(bfk, Map.class);
+				
 //				log.info(joinSelectMap);
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
@@ -195,14 +198,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 				}
 				log.info("AUTO_BID_WORKER runModule Before");
 				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
+				log.info("AUTO_BID_WORKER runModule END");
 			}
 			
 			try {
-				
+				log.info("RANK HISTORY START");
 				int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
 				log.info("rank history search_ad_id : " + search_ad_id);
-				log.info("History runModule Before");
 				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
+				log.info("RANK HISTORY END");
 				
 				List<String> rank_args = new ArrayList<String>();
 				rank_args.add(StringUtils.substring(checked_at, 0, 10));

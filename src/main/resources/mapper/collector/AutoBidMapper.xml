@@ -191,7 +191,7 @@
 				 	   AND emergency_status = #{emergency_status}
 				       AND resv_status = 'Active'
 					   AND bid_schedule IS NOT NULL
-					   AND (bid_status = 'Active' OR bid_status = 'OppActive')
+					   AND bid_status in (  'Active' , 'OppActive')
 		               AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0
 			  GROUP BY kwd_nm, target) ut,
 			   bid_favorite_keywords bfk
@@ -212,7 +212,7 @@
 				  FROM bid_favorite_keywords
 				 WHERE kwd_nm = #{kwd_nm}
 				       AND target = #{target}
-				       AND (bid_status = 'Active' OR bid_status = 'OppActive')
+				       AND bid_status IN ( 'Active', 'OppActive')
 				       AND emergency_status = #{emergency_status}
 				       AND resv_status = 'Inactive') bfk,
 			   adv_infos ai,
