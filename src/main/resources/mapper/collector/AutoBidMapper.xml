@@ -161,6 +161,49 @@
 	
 	
 	<select id="selectCrawlingRankKwdList" parameterType="Map" resultType="HashMap">
+	SELECT bfk.kwd_nm kwd_nm, 
+		   bfk.target target, 
+		   bfk.process_num process_num, 
+		   bfk.emergency_status emergency_status
+	  FROM bid_favorite_keywords bfk,
+		   (SELECT ut.kwd_id
+			  FROM (SELECT kwd_id
+					  FROM bid_favorite_keywords
+					 WHERE bid_status IN ('Active', 'OppActive')
+					 	   AND emergency_status = #{emergency_status}
+					 	   AND process_num = #{process_num}
+					 UNION
+					SELECT bct.kwd_id
+					  FROM (SELECT kwd_id, color
+							  FROM bid_schedule_types
+						     WHERE bid_status = 'Active') bct,
+						   (SELECT kwd_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color
+						      FROM bid_favorite_keywords
+						     WHERE resv_status = 'Active'
+						   	       AND bid_status != 'Inactive'
+						           AND emergency_status = #{emergency_status}
+						           AND process_num = #{process_num}
+						           AND bid_schedule IS NOT NULL) bfk
+					 WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color) ut
+			 WHERE ut.kwd_id NOT IN (SELECT bfk.kwd_id
+			 						FROM (SELECT kwd_id, color
+									    	FROM bid_schedule_types
+								       	   WHERE bid_status = 'CpaActive') bct,
+								     	 (SELECT kwd_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color
+								        	FROM bid_favorite_keywords
+								       	   WHERE resv_status = 'Active'
+								   	       		 AND bid_status != 'Inactive'
+								             	 AND emergency_status = #{emergency_status}
+								             	 AND process_num = #{process_num}
+								             	 AND bid_schedule IS NOT NULL) bfk
+						  		   WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color)) kiList		 
+     WHERE bfk.kwd_id = kiList.kwd_id
+  GROUP BY kwd_nm, target, process_num, emergency_status
+	</select>
+	
+	<!-- 속도 느린 Select 버전 -->
+	<!-- 
+	<select id="selectCrawlingRankKwdList" parameterType="Map" resultType="HashMap">
 		SELECT bfk.kwd_nm, bfk.target, bfk.process_num, bfk.emergency_status
 		  FROM (SELECT kwd_nm,
 					   target
@@ -198,6 +241,7 @@
 		 WHERE bfk.kwd_nm = ut.kwd_nm AND bfk.target = ut.target
 	  GROUP BY kwd_nm, target, process_num, emergency_status
 	</select>
+	 -->
 
 	
 	<!-- 
