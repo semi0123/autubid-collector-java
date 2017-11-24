@@ -178,11 +178,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(checked_at);
 				args.add(maxBidAmt);
 				args.add(emergency_status);
-				args.add(opp_rank.toString());
+				args.add(opp_rank == null ? "16" : opp_rank.toString());
 				args.add(bid_type);
 				
+				log.info("IProcess.MODULES DIR BEFORE LOG");
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
+				log.info("IProcess.AUTO_BID_WORKER BEFORE LOG");
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.AUTO_BID_WORKER);
+				log.info("args BEFORE LOG");
 				log.info("args => ");
 				
 				int cnt = 0;
@@ -190,7 +193,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("["+cnt+"] "+temp);
 				  	cnt++;
 				}
-
+				log.info("AUTO_BID_WORKER runModule Before");
 				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 			}
 			
@@ -198,6 +201,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				
 				int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
 				log.info("rank history search_ad_id : " + search_ad_id);
+				log.info("History runModule Before");
 				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
 				
 				List<String> rank_args = new ArrayList<String>();
@@ -214,6 +218,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			
 			
 		}catch(Exception e){
+			e.printStackTrace();
 			log.info(e.getMessage());
 		}
 	}

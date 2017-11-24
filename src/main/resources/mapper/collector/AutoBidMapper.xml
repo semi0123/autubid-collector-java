@@ -60,9 +60,10 @@
 			   bfk.rank,
 			   bfk.opp_gap,
 			   bfk.opp_site,
-			   bfk.resv_status
+			   bfk.resv_status,
+			   bfk.bid_status
 		  FROM bid_favorites bf,
-		       (SELECT kwd_id, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status,rank, opp_gap, opp_site, resv_status
+		       (SELECT kwd_id, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status,rank, opp_gap, opp_site, resv_status, bid_status
 		          FROM bid_favorite_keywords
 		         WHERE kwd_id = #{_parameter}) bfk,
 		       adv_infos ai
@@ -97,7 +98,7 @@
 	<select id="selectSearchAdId" parameterType="String" resultType="int">
 		SELECT id
 		FROM search_ads
-		WHERE name = #{kwd_nm}
+		WHERE name = #{_parameter}
 	</select>	
 	
 	<select id="selectStatusFromBidMachine" parameterType="Map" resultType="BidMachineMng">
