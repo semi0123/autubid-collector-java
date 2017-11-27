@@ -71,8 +71,8 @@ public class CpaServiceImpl implements CpaService{
 					log.info("["+cnt+"] "+temp);
 				  	cnt++;
 				}
-			}
 				runModule(IProcess.MODULES_DIR, IProcess.CPA_AUTO_BID_WORKER, args);
+			}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
