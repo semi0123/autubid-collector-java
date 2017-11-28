@@ -305,9 +305,13 @@
 		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status, target, rec_clk_rnk, rec_clk_at 
 			      FROM bid_favorite_keywords
 			     WHERE resv_status = 'Active'
-			     	   AND bid_status = 'Inactive'
+			     	   AND bid_status != 'Inactive'
 			     	   <if test="emergency_status != null">
 	                   AND emergency_status = #{emergency_status}
+			     	   </if>
+			     	   <if test="type == 'rank'">
+			     	   AND kwd_nm = #{kwd_nm}
+			     	   AND target = #{target}
 			     	   </if>
 	                   AND bid_schedule IS NOT NULL) bfk,
 	           adv_infos ai,
@@ -331,6 +335,10 @@
 				  FROM bid_favorite_keywords
 				 WHERE bid_status = #{bid_status}
 				       AND resv_status = 'Active'
+				       <if test="type == 'rank'">
+				       AND kwd_nm = #{kwd_nm}
+				       AND target = #{target}
+				       </if>
 				 	   <if test="emergency_status != null">
 				  	   AND emergency_status = #{emergency_status}
 				  	   </if>

@@ -87,6 +87,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 			inputMap.put("bid_status", "Active");
 			inputMap.put("timePosition", TimePositionMaker.makeTimePosition());
 			inputMap.put("emergency_status", emergency_status);
+			inputMap.put("kwd_nm", kwd_nm);
+			inputMap.put("target", target);
+			inputMap.put("type", "rank");
 			// 키워드 bid_status가 Inactive이면서, resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
 			activeBfkList.addAll(autoBidDao.selectResvActKeywordList(inputMap));
 
@@ -102,7 +105,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 			
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = new ObjectMapper().convertValue(bfk, Map.class);
-				
 //				log.info(joinSelectMap);
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
@@ -115,7 +117,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
-				
 				
 				rank= 16;
 				try {
@@ -147,14 +148,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 				if( "OppActive".equals(joinSelectMap.get("bid_status")) ){
 					opp_rank = 16;
 					try{
-						opp_rank = crawlingMap.get(joinSelectMap.get("opp_site")).getRank();
 						log.info("opp rank : " + opp_rank);
+						opp_rank = crawlingMap.get(String.valueOf(joinSelectMap.get("opp_site"))).getRank();
 						Integer tempGoalRank = opp_rank + Integer.parseInt(joinSelectMap.get("opp_gap").toString());
 						if( tempGoalRank > rankRange){
 							tempGoalRank = rankRange;
 						}
 						goalRank = tempGoalRank.toString();
 					}catch(Exception e){
+						e.printStackTrace();
 						log.info("===== : " + e.getMessage());
 						opp_rank = 16;
 					}
@@ -199,25 +201,26 @@ public class CrawlingServiceImpl implements CrawlingService{
 				log.info("AUTO_BID_WORKER runModule Before");
 				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 				log.info("AUTO_BID_WORKER runModule END");
+				
+				try {
+					log.info("RANK HISTORY START");
+					int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
+					log.info("rank history search_ad_id : " + search_ad_id);
+					HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
+					log.info("RANK HISTORY END");
+					
+					List<String> rank_args = new ArrayList<String>();
+					rank_args.add(StringUtils.substring(checked_at, 0, 10));
+					rank_args.add(String.valueOf(search_ad_id));
+					rank_args.add(target);
+					
+					runModule(IProcess.MODULES_DIR, IProcess.KWD_RANK_HISTORIES_WORKER, rank_args);
+					
+				}catch(Exception e) {
+					log.info("rank history error : " + e.getMessage());
+				}
 			}
 			
-			try {
-				log.info("RANK HISTORY START");
-				int search_ad_id = autoBidDao.selectSearchAdId(kwd_nm);
-				log.info("rank history search_ad_id : " + search_ad_id);
-				HistoryUtil.writekwdRankHistories(IProcess.RANK_HISTORY_DIR, kwd_nm, target, checked_at, emergency_status, search_ad_id, rnk_list);
-				log.info("RANK HISTORY END");
-				
-				List<String> rank_args = new ArrayList<String>();
-				rank_args.add(StringUtils.substring(checked_at, 0, 10));
-				rank_args.add(String.valueOf(search_ad_id));
-				rank_args.add(target);
-				
-				runModule(IProcess.MODULES_DIR, IProcess.KWD_RANK_HISTORIES_WORKER, rank_args);
-				
-			}catch(Exception e) {
-				log.info("rank history error : " + e.getMessage());
-			}
 			
 			
 			
