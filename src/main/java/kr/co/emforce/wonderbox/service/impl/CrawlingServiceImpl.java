@@ -151,9 +151,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 						log.info("opp rank : " + opp_rank);
 						opp_rank = crawlingMap.get(String.valueOf(joinSelectMap.get("opp_site"))).getRank();
 						Integer tempGoalRank = opp_rank + Integer.parseInt(joinSelectMap.get("opp_gap").toString());
+						
 						if( tempGoalRank > rankRange){
 							tempGoalRank = rankRange;
 						}
+						
+						if( tempGoalRank < 1 ){
+							tempGoalRank = 1;
+						}
+						
 						goalRank = tempGoalRank.toString();
 					}catch(Exception e){
 						e.printStackTrace();
