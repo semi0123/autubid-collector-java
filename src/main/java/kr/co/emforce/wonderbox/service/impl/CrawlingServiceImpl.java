@@ -148,10 +148,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 				if( "OppActive".equals(joinSelectMap.get("bid_status")) ){
 					opp_rank = 16;
 					try{
-						log.info("opp rank : " + opp_rank);
 						opp_rank = crawlingMap.get(String.valueOf(joinSelectMap.get("opp_site"))).getRank();
-						Integer tempGoalRank = opp_rank + Integer.parseInt(joinSelectMap.get("opp_gap").toString());
-						
+						Integer tempGoalRank = opp_rank - Integer.parseInt(joinSelectMap.get("opp_gap").toString());
 						if( tempGoalRank > rankRange){
 							tempGoalRank = rankRange;
 						}
@@ -161,6 +159,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 						}
 						
 						goalRank = tempGoalRank.toString();
+						log.info("opp_goal_rank : " + goalRank);
 					}catch(Exception e){
 						e.printStackTrace();
 						log.info("===== : " + e.getMessage());
