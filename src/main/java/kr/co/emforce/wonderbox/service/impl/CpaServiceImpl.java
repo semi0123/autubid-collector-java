@@ -46,6 +46,10 @@ public class CpaServiceImpl implements CpaService{
 			
 			List<String> args = new ArrayList<String>();
 			
+			String tempRecClkRnk = null;
+			String tempRecClkAt = null;
+			
+			
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
 	
