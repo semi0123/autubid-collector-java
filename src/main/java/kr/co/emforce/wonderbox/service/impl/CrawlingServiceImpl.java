@@ -163,6 +163,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 					}catch(Exception e){
 						e.printStackTrace();
 						log.info("===== : " + e.getMessage());
+						goalRank = String.valueOf(rankRange);
 						opp_rank = 16;
 					}
 				}
