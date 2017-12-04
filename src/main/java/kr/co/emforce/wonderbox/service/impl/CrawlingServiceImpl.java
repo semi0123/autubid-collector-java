@@ -161,7 +161,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 						goalRank = tempGoalRank.toString();
 						log.info("opp_goal_rank : " + goalRank);
 					}catch(Exception e){
-						e.printStackTrace();
+						//e.printStackTrace();
 						log.info("===== : " + e.getMessage());
 						goalRank = String.valueOf(rankRange);
 						opp_rank = 16;

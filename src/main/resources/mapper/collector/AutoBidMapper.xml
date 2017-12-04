@@ -405,7 +405,7 @@
 				  	   AND emergency_status = #{emergency_status}
 				  	   </if>
 				  	   AND bid_schedule IS NOT NULL
-					   AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = 0) bfk,
+					   AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = '0') bfk,
 			   adv_infos ai,
 	           bid_favorites bf
 	     WHERE bf.id = bfk.bid_favorites_id 
