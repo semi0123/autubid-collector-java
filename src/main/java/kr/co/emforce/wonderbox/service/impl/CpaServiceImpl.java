@@ -52,7 +52,7 @@ public class CpaServiceImpl implements CpaService{
 			
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
-	
+				
 				args.clear();
 				args.add(bfk.getAdv_id());
 				args.add(bfk.getNa_account_ser());
@@ -65,6 +65,7 @@ public class CpaServiceImpl implements CpaService{
 				args.add(String.valueOf(bfk.getGoal_cpa_amt()));
 				args.add(String.valueOf(bfk.getMax_bid_amt()));
 				args.add(bfk.getEmergency_status());
+				args.add(String.valueOf(autoBidDao.selectOneBidFavoriteKeyword(bfk.getKwd_id()).getCur_cpa_amt()));
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.CPA_AUTO_BID_WORKER);

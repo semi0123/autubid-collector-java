@@ -11,6 +11,14 @@
 		 WHERE process_num = #{value}
 	  GROUP BY kwd_nm, target
 	</select>
+	
+	<select id="selectOneBidFavoriteKeyword" parameterType="String" resultType="BidFavoriteKeyword">
+		SELECT kwd_id,
+			   IFNULL(cur_bid_amt, 0) cur_bid_amt,
+			   IFNULL(cur_cpa_amt, 0) cur_cpa_amt
+		  FROM bid_favorite_keywords
+		 WHERE kwd_id = #{_parameter}
+	</select>
 
 	<select id="selectKwdNmAndTargetFromBidFavoriteKeywords" parameterType="Map" resultType="HashMap">
 		SELECT kwd_nm, 

@@ -7,7 +7,6 @@ import java.util.Map;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.model.collector.BidInstance;
 import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
-import kr.co.emforce.wonderbox.model.stats.BidCrawlingStats;
 
 public interface AutoBidDao {
 	public List<LinkedHashMap<String, Object>> selectKwdNmAndTargetFromBidFavoriteKeywords(Map<String, Object> inputMap);
@@ -30,6 +29,9 @@ public interface AutoBidDao {
 	
 	public BidInstance selectBidInstance(String name);
 	
+	
+	
+	public BidFavoriteKeyword selectOneBidFavoriteKeyword(String kwd_id);
 	
 	
 	// 크롤링 해올 키워드 목록
