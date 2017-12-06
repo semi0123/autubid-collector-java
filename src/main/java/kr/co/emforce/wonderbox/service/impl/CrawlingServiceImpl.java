@@ -71,6 +71,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String target = requestBody.get("target").toString();
 		String checked_at = requestBody.get("checked_at").toString();
 		String emergency_status = requestBody.get("emergency_status").toString();
+		
+		String server_name = requestBody.get("server_name").toString();
+		Boolean isTest = server_name.toLowerCase().contains("test"); 
+		
+		
 		ArrayList<Map<String,Object>> rnk_list = (ArrayList<Map<String, Object>>) requestBody.get("result_rank");
 
 		Map<Object, CrawlingResult> crawlingMap = null;
@@ -205,9 +210,16 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("["+cnt+"] "+temp);
 				  	cnt++;
 				}
-				log.info("AUTO_BID_WORKER runModule Before");
-				runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
-				log.info("AUTO_BID_WORKER runModule END");
+				
+				if( isTest == false ){
+					log.info("AUTO_BID_WORKER runModule Before");
+					runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
+					log.info("AUTO_BID_WORKER runModule END");
+				}else{
+					log.info("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
+					log.info(server_name + " 서버 크롤링 테스트");
+					log.info("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
+				}
 				
 				try {
 					log.info("RANK HISTORY START");
