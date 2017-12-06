@@ -259,7 +259,8 @@
 	<select id="selectResvInactRankKeywordList" parameterType="BidFavoriteKeyword" resultType="BidFavoriteKeyword">
 		SELECT ai.adv_id, 
 	    	   ai.na_account_ser, 
-	    	   bfk.*
+	    	   bfk.*,
+	    	   'Inactive' is_resv
 		  FROM (SELECT *
 				  FROM bid_favorite_keywords
 				 WHERE kwd_nm = #{kwd_nm}
