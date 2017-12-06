@@ -35,6 +35,9 @@ public class BidFavoriteKeyword {
 	private String adv_id;
 	private String na_account_ser;
 	
+	// 모듈에 예약 상태 키워드인지 넘겨주는 컬럼
+	private String is_resv;
+	
 	
 	// 2차 추가 컬럼
 	private String bid_cpa_status;
@@ -320,6 +323,16 @@ public class BidFavoriteKeyword {
 		this.msg_cd = msg_cd;
 		return this;
 	}
+	
+	
+	public String getIs_resv() {
+		return is_resv;
+	}
+	public BidFavoriteKeyword setIs_resv(String is_resv) {
+		this.is_resv = is_resv;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return "BidFavoriteKeyword [id=" + id + ", created_by=" + created_by + ", updated_by=" + updated_by
@@ -331,9 +344,9 @@ public class BidFavoriteKeyword {
 				+ before_bid_amt + ", bid_updated_at=" + bid_updated_at + ", created_at=" + created_at + ", updated_at="
 				+ updated_at + ", site=" + site + ", target=" + target + ", process_num=" + process_num
 				+ ", emergency_status=" + emergency_status + ", adv_id=" + adv_id + ", na_account_ser=" + na_account_ser
-				+ ", bid_cpa_status=" + bid_cpa_status + ", cur_cpa_amt=" + cur_cpa_amt + ", goal_cpa_amt="
-				+ goal_cpa_amt + ", rec_clk_rnk=" + rec_clk_rnk + ", rec_clk_at=" + rec_clk_at + ", cur_opp_rank="
-				+ cur_opp_rank + ", opp_site=" + opp_site + ", opp_gap=" + opp_gap + ", resv_status=" + resv_status
-				+ ", msg_cd=" + msg_cd + "]";
+				+ ", is_resv=" + is_resv + ", bid_cpa_status=" + bid_cpa_status + ", cur_cpa_amt=" + cur_cpa_amt
+				+ ", goal_cpa_amt=" + goal_cpa_amt + ", rec_clk_rnk=" + rec_clk_rnk + ", rec_clk_at=" + rec_clk_at
+				+ ", cur_opp_rank=" + cur_opp_rank + ", opp_site=" + opp_site + ", opp_gap=" + opp_gap
+				+ ", resv_status=" + resv_status + ", msg_cd=" + msg_cd + "]";
 	}
 }

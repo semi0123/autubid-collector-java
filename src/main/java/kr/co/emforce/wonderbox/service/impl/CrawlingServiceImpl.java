@@ -191,6 +191,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(emergency_status);
 				args.add(opp_rank == null ? "16" : opp_rank.toString());
 				args.add(bid_type);
+				args.add(joinSelectMap.get("is_resv").toString());
 				
 				log.info("IProcess.MODULES DIR BEFORE LOG");
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);

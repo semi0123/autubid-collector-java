@@ -302,7 +302,8 @@
 	    	   IFNULL(rec_clk_at, '1970-01-01 00:00:00') rec_clk_at,
 	    	   bfk.cur_opp_rank,
 	    	   bfk.opp_site,
-	    	   bfk.opp_gap 
+	    	   bfk.opp_gap,
+	    	   'Inactive' is_resv
 		  FROM (SELECT *
 		  		  FROM bid_favorite_keywords
 		 		 WHERE bid_status = 'CpaActive'
@@ -333,7 +334,8 @@
 	    	   bfk.site, 
 	    	   bfk.target,
 	    	   IFNULL(bfk.rec_clk_rnk, 0) rec_clk_rnk,
-	    	   IFNULL(bfk.rec_clk_at, '1970-01-01 00:00:00') rec_clk_at
+	    	   IFNULL(bfk.rec_clk_at, '1970-01-01 00:00:00') rec_clk_at,
+	    	   'Active' is_resv
 	  	  FROM (SELECT kwd_id, color, bid_status, goal_rank, max_bid_amt, goal_cpa
 			      FROM bid_schedule_types
 			     WHERE bid_status = #{bid_status}) bst,
@@ -392,7 +394,8 @@
 	    	   IFNULL(rec_clk_at, '1970-01-01 00:00:00') rec_clk_at,
 	    	   bfk.cur_opp_rank,
 	    	   bfk.opp_site,
-	    	   bfk.opp_gap 
+	    	   bfk.opp_gap,
+	    	   'Inactive' is_resv 
 		  FROM (SELECT *
 				  FROM bid_favorite_keywords
 				 WHERE bid_status = #{bid_status}

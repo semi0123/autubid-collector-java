@@ -66,6 +66,7 @@ public class CpaServiceImpl implements CpaService{
 				args.add(String.valueOf(bfk.getMax_bid_amt()));
 				args.add(bfk.getEmergency_status());
 				args.add(String.valueOf(autoBidDao.selectOneBidFavoriteKeyword(bfk.getKwd_id()).getCur_cpa_amt()));
+				args.add(bfk.getIs_resv());
 				
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
 				log.info("IProcess.AUTO_BID_WORKER => " + IProcess.CPA_AUTO_BID_WORKER);
