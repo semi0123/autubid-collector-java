@@ -178,7 +178,7 @@
 			  FROM (SELECT kwd_id
 					  FROM bid_favorite_keywords
 					 WHERE bid_status IN ('Active', 'OppActive')
-					 	   AND emergency_status = #{emergency_status}
+					 	   AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
 					 	   AND process_num = #{process_num}
 					 UNION
 					SELECT bct.kwd_id
@@ -189,7 +189,7 @@
 						      FROM bid_favorite_keywords
 						     WHERE resv_status = 'Active'
 						   	       AND bid_status != 'Inactive'
-						           AND emergency_status = #{emergency_status}
+						           AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
 						           AND process_num = #{process_num}
 						           AND bid_schedule IS NOT NULL) bfk
 					 WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color) ut
@@ -201,7 +201,7 @@
 								        	FROM bid_favorite_keywords
 								       	   WHERE resv_status = 'Active'
 								   	       		 AND bid_status != 'Inactive'
-								             	 AND emergency_status = #{emergency_status}
+								             	 AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
 								             	 AND process_num = #{process_num}
 								             	 AND bid_schedule IS NOT NULL) bfk
 						  		   WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color)) kiList		 
