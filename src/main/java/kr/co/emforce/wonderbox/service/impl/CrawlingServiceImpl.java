@@ -107,9 +107,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 			
 			Integer rank = null;
 			Integer opp_rank = null;
+			String is_resv = null;
 			
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = new ObjectMapper().convertValue(bfk, Map.class);
+				is_resv = joinSelectMap.get("is_resv").toString();
 //				log.info(joinSelectMap);
 //				log.info("adv_id : " + joinSelectMap.get("adv_id"));
 //				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
@@ -179,7 +181,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 					
 					String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
 					String user_id = "시스템 ";
-					String type_desc = "자동";
+					String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
 					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				}
 				
@@ -196,7 +198,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(emergency_status);
 				args.add(opp_rank == null ? "16" : opp_rank.toString());
 				args.add(bid_type);
-				args.add(joinSelectMap.get("is_resv").toString());
+				args.add(is_resv);
 				
 				log.info("IProcess.MODULES DIR BEFORE LOG");
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
