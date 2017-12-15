@@ -125,15 +125,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 //				log.info("cur_rank 1: " + bfk.getRank());
 //				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
 				
-				rank= 16;
-				try {
-					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
-					log.info("rank : " + rank);
-				}catch(Exception e) {
-					log.info("===== : " + e.getMessage());
-					rank= 16;
-				}
-				
 				log.info("checked_at : " + checked_at);
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
@@ -144,6 +135,17 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
 //				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
+				
+				
+				rank= 16;
+				try {
+					rank = Integer.valueOf(String.valueOf(crawlingMap.get(joinSelectMap.get("site")).getRank()));
+					log.info("rank : " + rank);
+				}catch(Exception e) {
+					log.info("===== : " + e.getMessage());
+					rank= rankRange+1;
+				}
+				
 				
 				String bid_type = null;
 				if( "Active".equals(joinSelectMap.get("bid_status"))){
