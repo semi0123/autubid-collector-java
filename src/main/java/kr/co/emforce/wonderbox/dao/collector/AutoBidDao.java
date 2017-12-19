@@ -1,5 +1,6 @@
 package kr.co.emforce.wonderbox.dao.collector;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,11 @@ public interface AutoBidDao {
 	
 	public BidFavoriteKeyword selectOneBidFavoriteKeyword(String kwd_id);
 	
+	// 현재 CPA 값 업데이트(kwd_id, cpa)
+	public int updateCurCpaAmtOneBidFavoriteKeyword(Map<String, Object> inputMap);
+	
+	// 즐겨찾기 된 전체 키워드 가져오기(premium만)
+	public List<BidFavoriteKeyword> selectAllBidFavoriteKeywords();
 	
 	// 크롤링 해올 키워드 목록
 	public List<LinkedHashMap<String, Object>> selectCrawlingRankKwdList(Map<String, Object> inputMap);

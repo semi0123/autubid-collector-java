@@ -415,4 +415,37 @@
 	     WHERE bf.id = bfk.bid_favorites_id 
 	           AND bf.advs_id = ai.adv_id	   
 	</select>
+	
+	
+	
+	<select id="selectAllBidFavoriteKeywords" resultType="BidFavoriteKeyword">
+		SELECT bf.advs_id,
+			   bfk.kwd_id, 
+			   bfk.kwd_nm,
+			   ai.na_account_ser, 
+			   bfk.goal_rank, 
+			   bfk.max_bid_amt, 
+			   bfk.site, 
+			   bfk.emergency_status,
+			   bfk.rank,
+			   bfk.opp_gap,
+			   bfk.opp_site,
+			   bfk.resv_status,
+			   bfk.bid_status
+		  FROM bid_favorites bf,
+		       (SELECT kwd_id, kwd_nm, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status,rank, opp_gap, opp_site, resv_status, bid_status
+		          FROM bid_favorite_keywords) bfk,
+		       (SELECT na_account_ser, adv_id FROM adv_infos WHERE client_type = 'premium') ai
+		 WHERE bf.id = bfk.bid_favorites_id
+		       AND bf.advs_id = ai.adv_id
+	</select>
+	
+	<update id="updateCurCpaAmtOneBidFavoriteKeyword" parameterType="Map">
+		UPDATE bid_favorite_keywords
+		   SET cur_cpa_amt = #{cpa}
+		 WHERE kwd_id = #{kwd_id}
+	</update>
+	
+	
+	
 </mapper>
