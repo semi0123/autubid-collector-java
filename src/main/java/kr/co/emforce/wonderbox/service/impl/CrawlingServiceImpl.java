@@ -196,7 +196,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(rankRange.toString());
 				args.add(goalRank);
 				args.add(checked_at);
-				args.add(maxBidAmt);
+				
+				// 0일 경우 10만 처리
+				args.add(maxBidAmt.equals("0") ? "100000" : maxBidAmt);
+				
 				args.add(emergency_status);
 				args.add(opp_rank == null ? "16" : opp_rank.toString());
 				args.add(bid_type);

@@ -52,10 +52,11 @@ public class CpaServiceImpl implements CpaService {
 			Map<String, Object> todayCpa = null;
 
 			List<String> args = new ArrayList<String>();
-
+			
+			Integer max_bid_amt = 0;
+			
 			for (BidFavoriteKeyword bfk : activeBfkList) {
 				todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
-
 				args.clear();
 				args.add(bfk.getAdv_id());
 				args.add(bfk.getNa_account_ser());
@@ -66,7 +67,11 @@ public class CpaServiceImpl implements CpaService {
 				args.add(todayCpa.get("today_cost").toString());
 				args.add(todayCpa.get("today_conv").toString());
 				args.add(String.valueOf(bfk.getGoal_cpa_amt()));
-				args.add(String.valueOf(bfk.getMax_bid_amt()));
+				
+				// 0일 경우 10만 처리
+				max_bid_amt = bfk.getMax_bid_amt() == 0 ? 100000 : bfk.getMax_bid_amt();
+				args.add(String.valueOf(max_bid_amt));
+				
 				args.add(bfk.getEmergency_status());
 				args.add(String.valueOf(autoBidDao.selectOneBidFavoriteKeyword(bfk.getKwd_id()).getCur_cpa_amt()));
 				args.add(bfk.getIs_resv());
