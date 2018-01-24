@@ -23,6 +23,5 @@ hs_err_pid*
 # exclude environments
 .settings
 .classpath
-.project
 .springBeans
 /bin/
