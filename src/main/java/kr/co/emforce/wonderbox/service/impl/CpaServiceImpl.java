@@ -143,7 +143,8 @@ public class CpaServiceImpl implements CpaService {
 				body = objMapper.writeValueAsString(requestBody);
 				responseData = restTemplate.postForEntity(anStatsDNS + "/cpa/history/", new HttpEntity(body, headers), Map.class).getBody();
 				if( responseData.get("success").equals(Boolean.TRUE) ){
-					autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(requestBody);
+					// 2018-01-29 Cpa 계산 오류로 주석 처리
+					//autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(requestBody);
 					log.info("■■■■■■■■■■■■■■■■■ cpa run all keyword success");
 					log.info("kwd_id : " + bfk.getKwd_id() + " / kwd_nm : " + bfk.getKwd_nm() + " / cpa : " + calculatedCpa);
 					log.info("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
