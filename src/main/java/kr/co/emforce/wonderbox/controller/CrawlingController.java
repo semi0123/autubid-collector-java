@@ -1,6 +1,5 @@
 package kr.co.emforce.wonderbox.controller;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,6 +52,37 @@ public class CrawlingController {
 		return crawlingService.selectForCrawlingModule(inputMap);
 	}
 	
+	/**
+	 * 
+	 * @param requestBody
+	  {
+		"checked_at" : "2018-01-30 10:02:10",
+		"emergency_status" : "False",
+		"kwd_nm" : "자동차보험",
+		"result_rank" : [ {
+				"ad_dsc" : "동부화재 새이름 DB손해보험! 교통법규준수 및 최근3년 무사고시 최대13.6%할인",
+				"rank" : 1,
+				"site" : "www.directdb.co.kr",
+				"title" : "DB손해보험 다이렉트 차보험"
+			}, {
+				"ad_dsc" : "연2천km이하 주행시 특약할인으로 내보험료 42% Down! 자동차보험",
+				"rank" : 2,
+				"site" : "www.hanwhadirect.com",
+				"title" : "한화다이렉트 공식 자동차보험"
+			}, {
+				"ad_dsc" : "인터넷으로 더 꼼꼼하게 확인하고 가입하는 보험. 3천km이하 주행시 33%특약할인",
+				"rank" : 3,
+				"site" : "www.meritzdirect.com",
+				"title" : "메리츠 다이렉트 자동차보험"
+			},
+			...
+			
+		],
+		"server_name" : "yw_test",
+		"target" : "pc"
+	  }
+	 * @param request
+	 */
 	@RequestMapping(value="/crawling/", method=RequestMethod.POST)
 	@ResponseBody
 	public void post(
