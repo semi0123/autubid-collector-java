@@ -75,7 +75,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String server_name = requestBody.get("server_name").toString();
 		Boolean isTest = server_name.toLowerCase().contains("test"); 
 		
-		
+		// 통계용
 		ArrayList<Map<String,Object>> rnk_list = (ArrayList<Map<String, Object>>) requestBody.get("result_rank");
 
 		Map<Object, CrawlingResult> crawlingMap = null;
@@ -95,7 +95,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			inputMap.put("kwd_nm", kwd_nm);
 			inputMap.put("target", target);
 			inputMap.put("type", "rank");
-			// 키워드 bid_status가 Inactive이면서, resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
+			// 키워드 bid_status가 Inactive가 아니면서 , resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
 			activeBfkList.addAll(autoBidDao.selectResvActKeywordList(inputMap));
 
 			// resv_status가 Active이고, 현재 스케쥴시간대가 0이면서, bid_status가 Inactive아닌 키워드 목록
@@ -133,6 +133,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				
 				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
+				String minBidAmt = String.valueOf(joinSelectMap.get("min_bid_amt"));
 //				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
 				String goalRank = String.valueOf(joinSelectMap.get("goal_rank"));
 				
@@ -168,12 +169,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 						}
 						
 						goalRank = tempGoalRank.toString();
-						log.info("opp_goal_rank : " + goalRank);
+						log.info("goalRank : " + goalRank);
 					}catch(Exception e){
 						//e.printStackTrace();
 						log.info("===== : " + e.getMessage());
-						goalRank = String.valueOf(rankRange);
-						opp_rank = 16;
+						// 경쟁사 이탈 시 목표순위 세팅
+						goalRank = joinSelectMap.get("opp_goal_rank").toString().equals("0") ? String.valueOf(rankRange) : joinSelectMap.get("opp_goal_rank").toString();
+						log.info("goalRank : " + goalRank);
+						// opp_rank = 16; 필요 있나...?
 					}
 				}
 				
@@ -197,8 +200,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(goalRank);
 				args.add(checked_at);
 				
-				// 0일 경우 10만 처리
+				// 최대 입찰가 : 0일 경우 10만원 처리
 				args.add(maxBidAmt.equals("0") ? "100000" : maxBidAmt);
+				
+				// 최소 입찰가 : 0일 경우 70 처리
+				args.add(minBidAmt.equals("0") ? "70" : minBidAmt);
 				
 				args.add(emergency_status);
 				args.add(opp_rank == null ? "16" : opp_rank.toString());

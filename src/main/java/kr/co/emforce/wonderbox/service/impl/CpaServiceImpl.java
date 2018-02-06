@@ -54,6 +54,8 @@ public class CpaServiceImpl implements CpaService {
 			List<String> args = new ArrayList<String>();
 			
 			Integer max_bid_amt = 0;
+			Integer min_bid_amt = 0;
+			
 			
 			for (BidFavoriteKeyword bfk : activeBfkList) {
 				todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
@@ -72,8 +74,12 @@ public class CpaServiceImpl implements CpaService {
 				max_bid_amt = bfk.getMax_bid_amt() == 0 ? 100000 : bfk.getMax_bid_amt();
 				args.add(String.valueOf(max_bid_amt));
 				
+				// 0일 경우 70 처리
+				min_bid_amt = bfk.getMin_bid_amt() == 0 ? 70 : bfk.getMin_bid_amt();
+				args.add(String.valueOf(min_bid_amt));
+				
 				args.add(bfk.getEmergency_status());
-				args.add(String.valueOf(autoBidDao.selectOneBidFavoriteKeyword(bfk.getKwd_id()).getCur_cpa_amt()));
+//				args.add(String.valueOf(autoBidDao.selectOneBidFavoriteKeyword(bfk.getKwd_id()).getCur_cpa_amt()));
 				args.add(bfk.getIs_resv());
 
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
