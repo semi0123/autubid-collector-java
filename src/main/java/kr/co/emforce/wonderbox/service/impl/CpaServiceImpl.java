@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +24,7 @@ import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
 import kr.co.emforce.wonderbox.module.IProcess;
 import kr.co.emforce.wonderbox.service.CpaService;
+import kr.co.emforce.wonderbox.util.RestTemplateUtil;
 import kr.co.emforce.wonderbox.util.TimePositionMaker;
 
 @Service
@@ -110,7 +112,6 @@ public class CpaServiceImpl implements CpaService {
 	@Override
 	public void runAllKeyword() {
 		List<BidFavoriteKeyword> allBidFavoriteKeyword = autoBidDao.selectAllBidFavoriteKeywords();
-		RestTemplate restTemplate = new RestTemplate();
 		Map<String, Object> responseData = null;
 		int todayCost = 0;
 		int todayConv = 0;
@@ -120,21 +121,19 @@ public class CpaServiceImpl implements CpaService {
 		int totalConv = 0;
 		int calculatedCpa = 0;
 		
-		String body = null;
-		ObjectMapper objMapper = new ObjectMapper();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-		Map<String, Object> requestBody = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		
 		for (BidFavoriteKeyword bfk : allBidFavoriteKeyword){
 			try{
+				data.put("kwd_id", bfk.getKwd_id());
+				
 				// 오늘 CPA
-				responseData = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
+				responseData = (Map<String, Object>) RestTemplateUtil.exchange(anStatsDNS + "/cpa/today/", HttpMethod.GET, data).get("data");
 				todayCost = Integer.parseInt(responseData.get("today_cost").toString());
 				todayConv = Integer.parseInt(responseData.get("today_conv").toString());
 				
 				// 어제 그제 CPA
-				responseData = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/history/2days/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
+				responseData = (Map<String, Object>) RestTemplateUtil.exchange(anStatsDNS + "/cpa/history/2days/", HttpMethod.GET, data).get("data");
 				twoDayCost = Integer.parseInt(responseData.get("cost").toString());
 				twoDayConv = Integer.parseInt(responseData.get("conv").toString());
 				
@@ -142,12 +141,11 @@ public class CpaServiceImpl implements CpaService {
 				totalConv = todayConv + twoDayConv;
 				calculatedCpa = totalConv == 0 ? 0 : totalCost / totalConv;
 				
-				requestBody.clear();
-				requestBody.put("kwd_id", bfk.getKwd_id());
-				requestBody.put("kwd_nm", bfk.getKwd_nm());
-				requestBody.put("cpa", calculatedCpa);
-				body = objMapper.writeValueAsString(requestBody);
-				responseData = restTemplate.postForEntity(anStatsDNS + "/cpa/history/", new HttpEntity(body, headers), Map.class).getBody();
+				data.clear();
+				data.put("kwd_id", bfk.getKwd_id());
+				data.put("kwd_nm", bfk.getKwd_nm());
+				data.put("cpa", calculatedCpa);
+				responseData = RestTemplateUtil.exchange(anStatsDNS + "/cpa/history/", HttpMethod.POST, data);
 				if( responseData.get("success").equals(Boolean.TRUE) ){
 					// 2018-01-29 Cpa 계산 오류로 주석 처리
 					//autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(requestBody);
