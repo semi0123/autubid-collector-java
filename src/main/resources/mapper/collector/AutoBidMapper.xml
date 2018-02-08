@@ -265,13 +265,13 @@
 				  FROM bid_favorite_keywords
 				 WHERE kwd_nm = #{kwd_nm}
 				       AND target = #{target}
-				       AND bid_status IN ( 'Active', 'OppActive')
-				       AND emergency_status = #{emergency_status}
-				       AND resv_status = 'Inactive') bfk,
-			   adv_infos ai,
+				       AND resv_status = 'Inactive'
+				       AND ((bid_status IN ( 'Active', 'OppActive') AND emergency_status = #{emergency_status}) 
+				       		OR (bid_status IN ( 'CpaActive') AND emergency_status = 'False_cpa'))) bfk,
+			       adv_infos ai,
 	           bid_favorites bf
 	     WHERE bf.id = bfk.bid_favorites_id 
-	           AND bf.advs_id = ai.adv_id     
+	           AND bf.advs_id = ai.adv_id       
 	</select>
 	<select id="selectResvInactCpaKeywordList" parameterType="Map" resultType="BidFavoriteKeyword">
 		SELECT ai.adv_id, 
@@ -309,7 +309,8 @@
 		  FROM (SELECT *
 		  		  FROM bid_favorite_keywords
 		 		 WHERE bid_status = 'CpaActive'
-		       	   AND resv_status = 'Inactive') bfk,
+		       	   AND resv_status = 'Inactive'
+		       	   AND emergency_Status != 'False_cpa') bfk,
 		       adv_infos ai,
 	           bid_favorites bf
 	     WHERE bf.id = bfk.bid_favorites_id 
@@ -346,12 +347,20 @@
 			      FROM bid_favorite_keywords
 			     WHERE resv_status = 'Active'
 			     	   AND bid_status != 'Inactive'
-			     	   <if test="emergency_status != null">
-	                   AND emergency_status = #{emergency_status}
-			     	   </if>
+			     	   <choose>
+				     	   <when test="bid_status == 'CpaActive' and type == 'rank'">
+		             		AND emergency_status = 'False_cpa'
+				     	   </when>
+				     	   <when test="bid_status == 'CpaActive' and emergency_status == null">
+				     	   		AND emergency_status != 'False_cpa'
+				     	   </when>
+				     	   <when test="emergency_status != null">
+					  	   	  AND emergency_status = #{emergency_status}
+					  	   </when>
+			     	   </choose>
 			     	   <if test="type == 'rank'">
-			     	   AND kwd_nm = #{kwd_nm}
-			     	   AND target = #{target}
+				     	   AND kwd_nm = #{kwd_nm}
+				     	   AND target = #{target}
 			     	   </if>
 	                   AND bid_schedule IS NOT NULL) bfk,
 	           adv_infos ai,
@@ -406,12 +415,20 @@
 				 WHERE bid_status = #{bid_status}
 				       AND resv_status = 'Active'
 				       <if test="type == 'rank'">
-				       AND kwd_nm = #{kwd_nm}
-				       AND target = #{target}
+					       AND kwd_nm = #{kwd_nm}
+					       AND target = #{target}
 				       </if>
-				 	   <if test="emergency_status != null">
-				  	   AND emergency_status = #{emergency_status}
-				  	   </if>
+				       <choose>
+					       <when test="bid_status == 'CpaActive' and type == 'rank'">
+						  	   AND emergency_status = 'False_cpa'
+					  	   </when>
+					  	   <when test="bid_status == 'CpaActive' and emergency_status == null">
+						  	   AND emergency_status != 'False_cpa'
+					  	   </when>
+					  	   <when test="emergency_status != null">
+					  	   	 AND emergency_status = #{emergency_status}
+					  	   </when>
+				       </choose>
 				  	   AND bid_schedule IS NOT NULL
 					   AND SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) = '0') bfk,
 			   adv_infos ai,

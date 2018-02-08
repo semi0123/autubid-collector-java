@@ -97,11 +97,15 @@ public class CrawlingServiceImpl implements CrawlingService{
 			inputMap.put("type", "rank");
 			// 키워드 bid_status가 Inactive가 아니면서 , resv_status가 Active이고, 현재 스케쥴시간대가 순위기반인 키워드 목록
 			activeBfkList.addAll(autoBidDao.selectResvActKeywordList(inputMap));
+			inputMap.put("bid_status", "CpaActive"); 
+			activeBfkList.addAll(autoBidDao.selectResvActKeywordList(inputMap));
 
 			// resv_status가 Active이고, 현재 스케쥴시간대가 0이면서, bid_status가 Inactive아닌 키워드 목록
 			inputMap.put("bid_status", "Active");
 			activeBfkList.addAll(autoBidDao.selectResvActCur0KeywordList(inputMap));
 			inputMap.put("bid_status", "OppActive");
+			activeBfkList.addAll(autoBidDao.selectResvActCur0KeywordList(inputMap));
+			inputMap.put("bid_status", "CpaActive"); 
 			activeBfkList.addAll(autoBidDao.selectResvActCur0KeywordList(inputMap));
 			inputMap.clear();
 			
@@ -190,6 +194,21 @@ public class CrawlingServiceImpl implements CrawlingService{
 					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				}
 				
+				// emergency_status=False_more인 경우
+				if("False_more".equals(emergency_status)){
+					rankRange = Integer.parseInt(joinSelectMap.get("rank_range").toString());
+				}
+				
+				// emergency_status=False_cpa인 경우
+				if("False_cpa".equals(emergency_status)){
+					goalRank = Integer.toString(rankRange - 1);
+				}	
+				
+				// emergency_status = False_cpa && bid_status != CpaActive -> emergency_status = False
+				if( !"CpaActive".equals(joinSelectMap.get("bid_status")) && "False_cpa".equals(emergency_status)){
+					emergency_status = "False";
+				}
+				
 				List<String> args = new ArrayList<String>();
 				args.add(advId);
 				args.add(customerId);
@@ -252,9 +271,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("rank history error : " + e.getMessage());
 				}
 			}
-			
-			
-			
 			
 		}catch(Exception e){
 			e.printStackTrace();
