@@ -184,15 +184,13 @@ public class CrawlingServiceImpl implements CrawlingService{
 					}
 				}
 				
-				if( before_rank != rank ) {
-					log.info("TODO Write History :");
-					log.info(" | customerId : " + customerId+ " |  kwdId : " + kwdId+ " |  kwd_nm : " + kwd_nm + " | checked_at : " + checked_at + " | emergency_status:" + emergency_status); 
-					
-					String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
-					String user_id = "시스템 ";
-					String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
-					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
-				}
+				// 랭크 변동 이력
+				log.info("TODO Write History :");
+				log.info(" | customerId : " + customerId+ " |  kwdId : " + kwdId+ " |  kwd_nm : " + kwd_nm + " | checked_at : " + checked_at + " | emergency_status:" + emergency_status); 
+								String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
+				String user_id = "시스템 ";
+				String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
+				HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				
 				// emergency_status=False_more인 경우
 				if("False_more".equals(emergency_status)){
@@ -360,7 +358,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 				   .append("ip_v4 : " + instance.getIp_v4() + "\n\n");
 			SimpleMailMessage smm = new SimpleMailMessage();
 			smm.setFrom("jungyw@emforce.co.kr");
-			smm.setTo(new String[] {"ahnjaemo@emforce.co.kr", "jungyw@emforce.co.kr", "gusfla09@emforce.co.kr"});
+			smm.setTo(new String[] {
+					"ahnjaemo@emforce.co.kr", 
+					"jungyw@emforce.co.kr", 
+					"gusfla09@emforce.co.kr",
+					"jamjameun@emforce.co.kr",
+					"kimnayoung@emforce.co.kr",
+					"yhj@emforce.co.kr"
+				});
 			smm.setSubject("자동입찰 솔루션 오류");
 			smm.setText(content.toString());
 			mailSender.send(smm);
