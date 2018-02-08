@@ -180,15 +180,13 @@ public class CrawlingServiceImpl implements CrawlingService{
 					}
 				}
 				
-				if( before_rank != rank ) {
-					log.info("TODO Write History :");
-					log.info(" | customerId : " + customerId+ " |  kwdId : " + kwdId+ " |  kwd_nm : " + kwd_nm + " | checked_at : " + checked_at + " | emergency_status:" + emergency_status); 
-					
-					String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
-					String user_id = "시스템 ";
-					String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
-					HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
-				}
+				// 랭크 변동 이력
+				log.info("TODO Write History :");
+				log.info(" | customerId : " + customerId+ " |  kwdId : " + kwdId+ " |  kwd_nm : " + kwd_nm + " | checked_at : " + checked_at + " | emergency_status:" + emergency_status); 
+								String write_msg = "현재 순위 : "+before_rank + " > " + rank ;
+				String user_id = "시스템 ";
+				String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
+				HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				
 				List<String> args = new ArrayList<String>();
 				args.add(advId);
