@@ -19,6 +19,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import kr.co.emforce.wonderbox.service.CrawlingService;
 import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.HistoryUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
+import kr.co.emforce.wonderbox.util.RestTemplateUtil;
 import kr.co.emforce.wonderbox.util.TimePositionMaker;
 
 
@@ -58,6 +60,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	@Autowired
 	JavaMailSender mailSender;
+
+	@Resource(name = "anStatsDNS")
+	private String anStatsDNS;
 	
 	@Override
 	public List<LinkedHashMap<String, Object>> selectForCrawlingModule(Map<String, Object> inputMap) {
@@ -205,6 +210,17 @@ public class CrawlingServiceImpl implements CrawlingService{
 				// emergency_status = False_cpa && bid_status != CpaActive -> emergency_status = False
 				if( !"CpaActive".equals(joinSelectMap.get("bid_status")) && "False_cpa".equals(emergency_status)){
 					emergency_status = "False";
+				}
+				
+				
+				
+				// emergency_status != False_cpa일 경우 stats에 입찰성공여부 전달
+				if( !"False_cpa".equals(emergency_status) ){
+					Map<String, Object> restData = new HashMap<String, Object>();
+					restData.put("kwd_id", joinSelectMap.get("kwd_id"));
+					restData.put("is_success", Integer.parseInt(goalRank) == rank);
+					log.info("■■■■■ Stats Goal Rest Exchange : POST " + anStatsDNS + "/stats/is/goal/ => " + restData);
+					RestTemplateUtil.exchange(anStatsDNS + "/stats/is/goal/", HttpMethod.POST, restData);
 				}
 				
 				List<String> args = new ArrayList<String>();
