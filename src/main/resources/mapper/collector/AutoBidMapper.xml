@@ -180,6 +180,10 @@
 					 WHERE bid_status IN ('Active', 'OppActive')
 					 	   AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
 					 	   AND process_num = #{process_num}
+						   <if test="emergency_status == 'False'">
+					 	   OR
+					 	   (bid_status = 'CpaActive' AND emergency_status = 'False_cpa' AND process_num = #{process_num})
+						   </if>					 	   
 					 UNION
 					SELECT bct.kwd_id
 					  FROM (SELECT kwd_id, color
@@ -334,6 +338,7 @@
 	    	   bst.min_bid_amt,
 	    	   bst.goal_cpa,
 	    	   bfk.rank, 
+	    	   bfk.rank_range,
 	    	   bfk.emergency_status, 
 	    	   bfk.site, 
 	    	   bfk.target,
@@ -343,7 +348,7 @@
 	  	  FROM (SELECT kwd_id, color, bid_status, goal_rank, max_bid_amt, min_bid_amt, goal_cpa
 			      FROM bid_schedule_types
 			     WHERE bid_status = #{bid_status}) bst,
-		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, site, emergency_status, target, rec_clk_rnk, rec_clk_at 
+		       (SELECT kwd_id, bid_favorites_id, SUBSTRING_INDEX(SUBSTRING_INDEX(bid_schedule,',',#{timePosition}),',',-1) color, rank, rank_range, site, emergency_status, target, rec_clk_rnk, rec_clk_at 
 			      FROM bid_favorite_keywords
 			     WHERE resv_status = 'Active'
 			     	   AND bid_status != 'Inactive'

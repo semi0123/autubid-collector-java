@@ -157,7 +157,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				}
 				
 				
-				String bid_type = null;
+				String bid_type = "rank";
 				if( "Active".equals(joinSelectMap.get("bid_status"))){
 					bid_type = "rank";
 				}else if( "OppActive".equals(joinSelectMap.get("bid_status"))){
@@ -234,10 +234,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(checked_at);
 				
 				// 최대 입찰가 : 0일 경우 10만원 처리
-				args.add(maxBidAmt.equals("0") ? "100000" : maxBidAmt);
+				args.add((maxBidAmt.equals("0") || maxBidAmt.equals("null")) ? "100000" : maxBidAmt);
 				
 				// 최소 입찰가 : 0일 경우 70 처리
-				args.add(minBidAmt.equals("0") ? "70" : minBidAmt);
+				args.add((minBidAmt.equals("0") || minBidAmt.equals("null")) ? "70" : minBidAmt);
 				
 				args.add(emergency_status);
 				args.add(opp_rank == null ? "16" : opp_rank.toString());
