@@ -76,6 +76,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String target = requestBody.get("target").toString();
 		String checked_at = requestBody.get("checked_at").toString();
 		String emergency_status = requestBody.get("emergency_status").toString();
+		String rank_range = requestBody.get("rank_range").toString();
 		
 		String server_name = requestBody.get("server_name").toString();
 		Boolean isTest = server_name.toLowerCase().contains("test"); 
@@ -140,7 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
 				
-				Integer rankRange = Integer.valueOf(String.valueOf(crawlingMap.size()));
+				Integer rankRange = Integer.valueOf(rank_range);
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
 				String minBidAmt = String.valueOf(joinSelectMap.get("min_bid_amt"));
 //				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
@@ -153,7 +154,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("rank : " + rank);
 				}catch(Exception e) {
 					log.info("===== : " + e.getMessage());
-					rank= rankRange+1;
+					if( rankRange == 0 ){
+						rank = 0;
+					}else{
+						rank = rankRange + 1;
+					}
 				}
 				
 				
@@ -197,23 +202,22 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String type_desc = is_resv.equals("Inactive") ? "자동" : "예약";
 				HistoryUtil.writekwdBidHistories(customerId, kwdId, kwd_nm, type_desc, write_msg, user_id, checked_at,emergency_status);
 				
-				// emergency_status=False_more인 경우
-				if("False_more".equals(emergency_status)){
-					rankRange = Integer.parseInt(joinSelectMap.get("rank_range").toString());
-				}
-				
 				// emergency_status=False_cpa인 경우
 				if("False_cpa".equals(emergency_status)){
-					goalRank = Integer.toString(rankRange - 1);
+					if( rankRange <= 0 ){
+						goalRank = "0";
+					}else if( rankRange == 1 ){
+						goalRank = "1";
+					}else{
+						goalRank = Integer.toString(rankRange - 1);
+					}
 				}	
 				
 				// emergency_status = False_cpa && bid_status != CpaActive -> emergency_status = False
 				if( !"CpaActive".equals(joinSelectMap.get("bid_status")) && "False_cpa".equals(emergency_status)){
 					emergency_status = "False";
 				}
-				
-				
-				
+												
 				// emergency_status != False_cpa일 경우 stats에 입찰성공여부 전달
 				if( !"False_cpa".equals(emergency_status) ){
 					Map<String, Object> restData = new HashMap<String, Object>();
@@ -222,7 +226,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("■■■■■ Stats Goal Rest Exchange : POST " + anStatsDNS + "/stats/is/goal/ => " + restData);
 					RestTemplateUtil.exchange(anStatsDNS + "/stats/is/goal/", HttpMethod.POST, restData);
 				}
-				
+							
 				List<String> args = new ArrayList<String>();
 				args.add(advId);
 				args.add(customerId);
