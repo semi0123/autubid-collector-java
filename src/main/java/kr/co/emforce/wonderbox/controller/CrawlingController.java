@@ -136,10 +136,5 @@ public class CrawlingController {
 		}
 		return returnMap;
 	}
-	
-	@RequestMapping(value="/crash/check/", method=RequestMethod.POST)
-	@ResponseBody
-	public void crashCheck(){
-		
-	}
+
 }

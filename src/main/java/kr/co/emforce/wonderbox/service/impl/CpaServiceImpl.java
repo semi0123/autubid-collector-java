@@ -1,7 +1,6 @@
 package kr.co.emforce.wonderbox.service.impl;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +10,8 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
@@ -48,8 +41,6 @@ public class CpaServiceImpl implements CpaService {
 			List<BidFavoriteKeyword> activeBfkList = autoBidDao.selectResvInactCpaKeywordList(inputMap);
 			activeBfkList.addAll(autoBidDao.selectResvActKeywordList(inputMap));
 			activeBfkList.addAll(autoBidDao.selectResvActCur0KeywordList(inputMap));
-
-			RestTemplate restTemplate = new RestTemplate();
 			
 			Map<String, Object> todayCpa = null;
 
@@ -60,7 +51,8 @@ public class CpaServiceImpl implements CpaService {
 			
 			
 			for (BidFavoriteKeyword bfk : activeBfkList) {
-				todayCpa = (Map<String, Object>) restTemplate.getForObject(anStatsDNS + "/cpa/today/?kwd_id=" + bfk.getKwd_id(), Map.class).get("data");
+
+				todayCpa = (Map<String, Object>) RestTemplateUtil.exchange(anStatsDNS + "/cpa/today/", HttpMethod.GET, "kwd_id=" + bfk.getKwd_id()).get("data");
 				args.clear();
 				args.add(bfk.getAdv_id());
 				args.add(bfk.getNa_account_ser());
@@ -151,7 +143,6 @@ public class CpaServiceImpl implements CpaService {
 					//autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(requestBody);
 					log.info("■■■■■■■■■■■■■■■■■ cpa run all keyword success");
 					log.info("kwd_id : " + bfk.getKwd_id() + " / kwd_nm : " + bfk.getKwd_nm() + " / cpa : " + calculatedCpa);
-					log.info("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
 				}else{
 					throw new Exception("POST " + anStatsDNS + "/cpa/history/ failed");
 				}
@@ -160,7 +151,6 @@ public class CpaServiceImpl implements CpaService {
 				log.error("■■■■■■■■■■■■■■■■■ cpa run all keyword error");
 				log.error("kwd_id : " + bfk.getKwd_id() + " / kwd_nm : " + bfk.getKwd_nm());
 //				e.printStackTrace();
-				log.error("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
 			}
 			
 		}
