@@ -33,7 +33,6 @@ import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
 import kr.co.emforce.wonderbox.model.collector.CrawlingResult;
 import kr.co.emforce.wonderbox.module.IProcess;
 import kr.co.emforce.wonderbox.service.CrawlingService;
-import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.HistoryUtil;
 import kr.co.emforce.wonderbox.util.JsonToClassConverter;
 import kr.co.emforce.wonderbox.util.RestTemplateUtil;
@@ -303,7 +302,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 
 	@Override
 	public void directRelocateProcessNum() throws Exception {
-		log.info(CurrentTimeUtil.getCurrentTime() + "(수동) 자동입찰 키워드 프로세스 재배정 시작");
+		log.info("(수동) 자동입찰 키워드 프로세스 재배정 시작");
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
 		inputMap.put("status", "Active");
@@ -345,11 +344,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 				sqlSession.update(AutoBidDao.class.getName() + ".updateProcessNumFromBidFavoriteKeyword", kw);
 			}
 			sqlSession.commit();
-			log.info(CurrentTimeUtil.getCurrentTime() + "(수동) 자동입찰 키워드 재배정 완료 / 업데이트 된 키워드 수 : " + totalCount);
+			log.info("(수동) 자동입찰 키워드 재배정 완료 / 업데이트 된 키워드 수 : " + totalCount);
 		}catch(Exception e){
 			sqlSession.rollback();
-			log.error(CurrentTimeUtil.getCurrentTime() + e.getMessage());
-			log.error(CurrentTimeUtil.getCurrentTime()  + "(수동) 자동입찰 키워드 재배정 실패");
+			log.error(e.getMessage());
+			log.error("(수동) 자동입찰 키워드 재배정 실패");
 			throw e;
 		}finally{
 			try{ if( sqlSession != null ) sqlSession.close(); }catch(Exception e){ }

@@ -374,7 +374,6 @@
             									<!-- ex) <include name="path" /> or <exclude name="path"/> -->
             									<include name="WEB-INF/classes/**/*"/>
             									<include name="WEB-INF/lib/**/*"/>
-            									<exclude name="WEB-INF/classes/log4j.xml"/>
             								</fileset>
             							</ftp>
             						</then>

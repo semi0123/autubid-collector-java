@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.emforce.wonderbox.service.CpaService;
-import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 
 @Controller
 @CrossOrigin(origins="*")
@@ -25,7 +24,7 @@ public class CpaController {
 	@RequestMapping(value="/cpa/", method=RequestMethod.POST)
 	@ResponseBody
 	public Object cpa(HttpServletRequest request){
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> POST /cpa/");
+		log.info("IP " + request.getRemoteAddr() + " -> POST /cpa/");
 		
 		cpaService.runBidModule();
 		
@@ -35,7 +34,7 @@ public class CpaController {
 	@RequestMapping(value="/cpa/all/", method=RequestMethod.POST)
 	@ResponseBody
 	public Object cpaAll(HttpServletRequest request){
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> POST /cpa/all/");
+		log.info("IP " + request.getRemoteAddr() + " -> POST /cpa/all/");
 		
 		cpaService.runAllKeyword();
 		

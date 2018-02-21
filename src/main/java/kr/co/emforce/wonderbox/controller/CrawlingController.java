@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.emforce.wonderbox.service.CrawlingService;
-import kr.co.emforce.wonderbox.util.CurrentTimeUtil;
 import kr.co.emforce.wonderbox.util.TimePositionMaker;
 
 @Controller
@@ -39,7 +38,7 @@ public class CrawlingController {
 			@RequestParam(value="caller", required=false, defaultValue="module") String caller,
 			HttpServletRequest request
 		){
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> GET process_num = " + process_num);
+		log.info("IP " + request.getRemoteAddr() + " -> GET process_num = " + process_num);
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
 		inputMap.put("process_num", process_num);
@@ -92,7 +91,7 @@ public class CrawlingController {
 		String kwd_nm = requestBody.get("kwd_nm").toString();
 		String target = requestBody.get("target").toString();
 		
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> POST kwd_nm = "+ kwd_nm + " / target = " + target);
+		log.info("IP " + request.getRemoteAddr() + " -> POST kwd_nm = "+ kwd_nm + " / target = " + target);
 		
 		
 		try{
@@ -109,7 +108,7 @@ public class CrawlingController {
 	@ResponseBody
 	public void crash(@RequestBody Map<String, String> reqBody){
 		crawlingService.crash(reqBody.get("name"));
-		log.info(CurrentTimeUtil.getCurrentTime() + "Server >>> " + reqBody.get("name") + " crash");
+		log.info("Server >>> " + reqBody.get("name") + " crash");
 	}
 	
 	@RequestMapping(value="/rerun/")
@@ -118,7 +117,7 @@ public class CrawlingController {
 			@RequestParam(value="process_num", required=true) String processNum,
 			HttpServletRequest request
 		){
-		log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> Rerun " + processNum + " Machine(s)");
+		log.info("IP " + request.getRemoteAddr() + " -> Rerun " + processNum + " Machine(s)");
 		return "Rerun machine num : " + crawlingService.updateReRun(processNum);
 	}
 	
@@ -127,7 +126,7 @@ public class CrawlingController {
 	public Object directRelocate(HttpServletRequest request){
 		Map<String, Object> returnMap = new LinkedHashMap<String, Object>();
 		try{
-			log.info(CurrentTimeUtil.getCurrentTime() + "IP " + request.getRemoteAddr() + " -> Direct Relocate Process Num");
+			log.info("IP " + request.getRemoteAddr() + " -> Direct Relocate Process Num");
 			crawlingService.directRelocateProcessNum();
 			returnMap.put("status", Boolean.TRUE);
 		}catch(Exception e){
