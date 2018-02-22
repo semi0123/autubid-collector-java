@@ -222,7 +222,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 					Map<String, Object> restData = new HashMap<String, Object>();
 					restData.put("kwd_id", joinSelectMap.get("kwd_id"));
 					restData.put("is_success", Integer.parseInt(goalRank) == rank);
-					log.info("■■■■■ Stats Goal Rest Exchange : POST " + anStatsDNS + "/stats/is/goal/ => " + restData);
 					RestTemplateUtil.exchange(anStatsDNS + "/stats/is/goal/", HttpMethod.POST, restData);
 				}
 							

@@ -99,7 +99,6 @@ public class RestTemplateUtil {
 		log.info(method + " " + url);
 		log.info("Headers : " + headers);
 		log.info("RequestBody : " + body);
-		log.info("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■");
 		
 		return restTemplate.exchange(url, method, new HttpEntity(body, headers), Map.class).getBody();
 		
