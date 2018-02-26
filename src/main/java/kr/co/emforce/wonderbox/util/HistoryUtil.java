@@ -49,7 +49,7 @@ public class HistoryUtil {
 	}
 
 	public static void writekwdRankHistories(String dir_path, String kwd_nm, String target, String checked_at,
-			String emergency_status, int search_ad_id, ArrayList<Map<String, Object>> rnk_list) throws IOException {
+			String emergency_status, int search_ad_id, ArrayList<Map<String, Object>> rnk_list, String server_name) throws IOException {
 
 		String file_path = dir_path + "/" + target + "/" + checked_at.substring(0, 10);
 		File Dir = new File(file_path);
@@ -68,7 +68,8 @@ public class HistoryUtil {
 				pw.print("site\t");
 				pw.print("target\t");
 				pw.print("title\t");
-				pw.print("ad_dsc\n");
+				pw.print("ad_dsc\t");
+				pw.print("server_name\n");
 
 				for (Map<String, Object> json : rnk_list) {
 					pw.print(checked_at + "\t");
@@ -76,7 +77,8 @@ public class HistoryUtil {
 					pw.print(json.get("site") + "\t");
 					pw.print(target + "\t");
 					pw.print(json.get("title") + "\t");
-					pw.print(json.get("ad_dsc") + "\n");
+					pw.print(json.get("ad_dsc") + "\t");
+					pw.print(server_name + "\n");
 				}
 
 				pw.flush();
@@ -95,7 +97,8 @@ public class HistoryUtil {
 					pww.print(json.get("site") + "\t");
 					pww.print(target + "\t");
 					pww.print(json.get("title") + "\t");
-					pww.print(json.get("ad_dsc") + "\n");
+					pww.print(json.get("ad_dsc") + "\t");
+					pww.print(server_name + "\n");
 				}
 				pww.flush();
 
