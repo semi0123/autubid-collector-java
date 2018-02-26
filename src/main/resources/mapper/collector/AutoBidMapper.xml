@@ -179,10 +179,10 @@
 					  FROM bid_favorite_keywords
 					 WHERE bid_status IN ('Active', 'OppActive')
 					 	   AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
-					 	   AND process_num = #{process_num}
+					 	   AND process_num IN (${process_num})
 						   <if test="emergency_status == 'False'">
 					 	   OR
-					 	   (bid_status = 'CpaActive' AND emergency_status = 'False_cpa' AND process_num = #{process_num})
+					 	   (bid_status = 'CpaActive' AND emergency_status = 'False_cpa' AND process_num IN (${process_num}))
 						   </if>					 	   
 					 UNION
 					SELECT bct.kwd_id
@@ -194,7 +194,7 @@
 						     WHERE resv_status = 'Active'
 						   	       AND bid_status != 'Inactive'
 						           AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
-						           AND process_num = #{process_num}
+						           AND process_num IN (${process_num})
 						           AND bid_schedule IS NOT NULL) bfk
 					 WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color) ut
 			 WHERE ut.kwd_id NOT IN (SELECT bfk.kwd_id
@@ -206,7 +206,7 @@
 								       	   WHERE resv_status = 'Active'
 								   	       		 AND bid_status != 'Inactive'
 								             	 AND emergency_status LIKE CONCAT('%',#{emergency_status},'%')
-								             	 AND process_num = #{process_num}
+								             	 AND process_num IN (${process_num})
 								             	 AND bid_schedule IS NOT NULL) bfk
 						  		   WHERE bct.kwd_id = bfk.kwd_id AND bct.color = bfk.color)) kiList		 
      WHERE bfk.kwd_id = kiList.kwd_id

@@ -31,7 +31,7 @@ public class CrawlingController {
 	@RequestMapping(value="/crawling/")
 	@ResponseBody
 	public Object forCrawlingModule(
-			@RequestParam(value="process_num") Integer process_num,
+			@RequestParam(value="process_num") String process_num,
 			@RequestParam(value="bid_status", required=false, defaultValue="Active") String bid_status,
 			@RequestParam(value="target", required=false) String target,
 			@RequestParam(value="emergency_status", required=false) String emergency_status,
@@ -41,6 +41,9 @@ public class CrawlingController {
 		log.info("IP " + request.getRemoteAddr() + " -> GET process_num = " + process_num);
 		
 		Map<String, Object> inputMap = new HashMap<String, Object>();
+		if( process_num.contains(",") ){
+			process_num = String.join(",", process_num.split(","));
+		}
 		inputMap.put("process_num", process_num);
 		inputMap.put("bid_status", bid_status);
 		inputMap.put("target", target);
