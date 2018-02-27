@@ -17,4 +17,6 @@ public interface CrawlingService {
 	public void crash(String name);
 	
 	public int updateReRun(String processNum);
+	
+	public void vpnStatusCheck(Map<String, String> requestBody);
 }

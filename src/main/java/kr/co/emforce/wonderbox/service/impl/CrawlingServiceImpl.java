@@ -390,8 +390,32 @@ public class CrawlingServiceImpl implements CrawlingService{
 			smm.setSubject("자동입찰 솔루션 오류");
 			smm.setText(content.toString());
 			mailSender.send(smm);
-			log.error(name + " Crawling Error Send Mail");
+			log.info(name + " Crawling Error Send Mail");
 		}
+	}
+	
+	
+	@Override
+	public void vpnStatusCheck(Map<String, String> requestBody) {
+		SimpleMailMessage smm = new SimpleMailMessage();
+		smm.setFrom("jungyw@emforce.co.kr");
+		smm.setTo(new String[] {
+				"ahnjaemo@emforce.co.kr", 
+				"jungyw@emforce.co.kr", 
+				"gusfla09@emforce.co.kr",
+				"jamjameun@emforce.co.kr",
+				"kimnayoung@emforce.co.kr",
+				"yhj@emforce.co.kr"
+			});
+		smm.setSubject("VPN 설정 오류");
+		StringBuffer content = new StringBuffer();
+		content.append("\n\n* 해당 메일은 Expressvpn 오류 발생시 자동으로 발송되는 메일입니다.\n\n")
+			   .append("서버명 : " + requestBody.get("server_name"))
+			   .append("메시지 : " + requestBody.get("status_msg"))
+			   .append("체크시간 : " + requestBody.get("check_time"));
+		smm.setText(content.toString());
+		mailSender.send(smm);
+		log.info("VPN Error : " + requestBody.get("server_name") + " / " + requestBody.get("status_msg") + " / " + requestBody.get("check_time"));
 	}
 	
 	@Override

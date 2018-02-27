@@ -139,4 +139,37 @@ public class CrawlingController {
 		return returnMap;
 	}
 
+	
+	/**
+	 * @param requestBody
+		{
+			"server_name" : "test",
+			"status_msg" : "Do you know psy?",
+			"check_time : "2018-02-27 13:57:00"
+		}
+	 * @return
+		{
+			"status" : true || false,
+			["msg" : "Exception Message"]
+		}
+	 */
+	@RequestMapping(value="/vpn/status/", method=RequestMethod.POST)
+	@ResponseBody
+	public Object vpnStatusCheck(@RequestBody Map<String, String> requestBody){
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+
+		try{
+			crawlingService.vpnStatusCheck(requestBody);
+			returnMap.put("status", Boolean.TRUE);
+		}catch(Exception e){
+			returnMap.put("status", Boolean.FALSE);
+			returnMap.put("msg", e.getMessage());
+		}
+		
+		return returnMap;
+	}
+	
+	
+	
+	
 }
