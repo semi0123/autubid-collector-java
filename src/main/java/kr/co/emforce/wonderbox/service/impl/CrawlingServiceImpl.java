@@ -75,13 +75,14 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String target = requestBody.get("target").toString();
 		String checked_at = requestBody.get("checked_at").toString();
 		String emergency_status = requestBody.get("emergency_status").toString();
-		String rank_range = requestBody.get("rank_range").toString();
+		Integer rank_range = Integer.valueOf(requestBody.get("rank_range").toString());// 통검 range
 		
 		String server_name = requestBody.get("server_name").toString();
 		Boolean isTest = server_name.toLowerCase().contains("test"); 
 		
 		// 통계용
 		ArrayList<Map<String,Object>> rnk_list = (ArrayList<Map<String, Object>>) requestBody.get("result_rank");
+		Integer more_rank_range = rnk_list.size(); // 더보기가 아닐 경우 통검 range, 더보기일 경우 더보기 range
 
 		Map<Object, CrawlingResult> crawlingMap = null;
 		List<BidFavoriteKeyword> activeBfkList = null;
@@ -140,7 +141,6 @@ public class CrawlingServiceImpl implements CrawlingService{
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
 				Integer before_rank = Integer.valueOf(String.valueOf(joinSelectMap.get("rank")));
 				
-				Integer rankRange = Integer.valueOf(rank_range);
 				String maxBidAmt = String.valueOf(joinSelectMap.get("max_bid_amt"));
 				String minBidAmt = String.valueOf(joinSelectMap.get("min_bid_amt"));
 //				String emergencyStatus = String.valueOf(joinSelectMap.get("emergency_status"));
@@ -153,10 +153,10 @@ public class CrawlingServiceImpl implements CrawlingService{
 					log.info("rank : " + rank);
 				}catch(Exception e) {
 					log.info("===== : " + e.getMessage());
-					if( rankRange == 0 ){
+					if( rank_range == 0 ){
 						rank = 0;
 					}else{
-						rank = rankRange + 1;
+						rank = more_rank_range + 1;
 					}
 				}
 				
@@ -173,8 +173,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 					try{
 						opp_rank = crawlingMap.get(String.valueOf(joinSelectMap.get("opp_site"))).getRank();
 						Integer tempGoalRank = opp_rank - Integer.parseInt(joinSelectMap.get("opp_gap").toString());
-						if( tempGoalRank > rankRange){
-							tempGoalRank = rankRange;
+						if( tempGoalRank > rank_range){
+							tempGoalRank = rank_range;
 						}
 						
 						if( tempGoalRank < 1 ){
@@ -187,7 +187,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 						//e.printStackTrace();
 						log.info("===== : " + e.getMessage());
 						// 경쟁사 이탈 시 목표순위 세팅
-						goalRank = joinSelectMap.get("opp_goal_rank").toString().equals("0") ? String.valueOf(rankRange) : joinSelectMap.get("opp_goal_rank").toString();
+						goalRank = joinSelectMap.get("opp_goal_rank").toString().equals("0") ? String.valueOf(rank_range) : joinSelectMap.get("opp_goal_rank").toString();
 						log.info("goalRank : " + goalRank);
 						// opp_rank = 16; 필요 있나...?
 					}
@@ -203,12 +203,12 @@ public class CrawlingServiceImpl implements CrawlingService{
 				
 				// emergency_status=False_cpa인 경우
 				if("False_cpa".equals(emergency_status)){
-					if( rankRange <= 0 ){
+					if( rank_range <= 0 ){
 						goalRank = "0";
-					}else if( rankRange == 1 ){
+					}else if( rank_range == 1 ){
 						goalRank = "1";
 					}else{
-						goalRank = Integer.toString(rankRange - 1);
+						goalRank = Integer.toString(rank_range - 1);
 					}
 				}	
 				
@@ -231,7 +231,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(kwdId);
 				args.add(target);
 				args.add(rank.toString());
-				args.add(rankRange.toString());
+				args.add(rank_range.toString());
 				args.add(goalRank);
 				args.add(checked_at);
 				
@@ -396,7 +396,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	
 	
 	@Override
-	public void vpnStatusCheck(Map<String, String> requestBody) {
+	public void vpnStatusCheck(Map<String, Object> requestBody) {
 		SimpleMailMessage smm = new SimpleMailMessage();
 		smm.setFrom("jungyw@emforce.co.kr");
 		smm.setTo(new String[] {
@@ -410,9 +410,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 		smm.setSubject("VPN 설정 오류");
 		StringBuffer content = new StringBuffer();
 		content.append("\n\n* 해당 메일은 Expressvpn 오류 발생시 자동으로 발송되는 메일입니다.\n\n")
-			   .append("서버명 : " + requestBody.get("server_name"))
-			   .append("메시지 : " + requestBody.get("status_msg"))
-			   .append("체크시간 : " + requestBody.get("check_time"));
+			   .append("서버명 : " + requestBody.get("server_name") + "\n")
+			   .append("메시지 : " + requestBody.get("status_msg") + "\n")
+			   .append("체크시간 : " + requestBody.get("check_time") + "\n");
 		smm.setText(content.toString());
 		mailSender.send(smm);
 		log.info("VPN Error : " + requestBody.get("server_name") + " / " + requestBody.get("status_msg") + " / " + requestBody.get("check_time"));

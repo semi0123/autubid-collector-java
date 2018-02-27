@@ -155,11 +155,11 @@ public class CrawlingController {
 	 */
 	@RequestMapping(value="/vpn/status/", method=RequestMethod.POST)
 	@ResponseBody
-	public Object vpnStatusCheck(@RequestBody Map<String, String> requestBody){
+	public Object vpnStatusCheck(@RequestBody Map<String, Object> reqBody){
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		try{
-			crawlingService.vpnStatusCheck(requestBody);
+			crawlingService.vpnStatusCheck(reqBody);
 			returnMap.put("status", Boolean.TRUE);
 		}catch(Exception e){
 			returnMap.put("status", Boolean.FALSE);
@@ -168,8 +168,5 @@ public class CrawlingController {
 		
 		return returnMap;
 	}
-	
-	
-	
 	
 }
