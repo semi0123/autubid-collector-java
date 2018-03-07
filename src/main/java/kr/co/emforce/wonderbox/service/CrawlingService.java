@@ -12,7 +12,7 @@ public interface CrawlingService {
 
 	public void directRelocateProcessNum() throws Exception;
 	
-	public void sendCrawlingPostJsonString(Map<String, Object> requestBody);
+	public void crawledKeywordLog(Map<String, Object> requestBody);
 	
 	public void crash(String name);
 	

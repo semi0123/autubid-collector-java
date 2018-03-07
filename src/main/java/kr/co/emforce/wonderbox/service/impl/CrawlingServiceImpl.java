@@ -17,7 +17,6 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.mail.SimpleMailMessage;
@@ -300,8 +299,16 @@ public class CrawlingServiceImpl implements CrawlingService{
 	}
 	
 	@Override
-	public void sendCrawlingPostJsonString(Map<String, Object> requestBody) {
-		log.info(new JSONObject(requestBody).toString());
+	public void crawledKeywordLog(Map<String, Object> requestBody) {
+		log.info("server_name : " + requestBody.get("server_name"));
+		log.info("kwd_nm : " + requestBody.get("kwd_nm"));
+		log.info("target : " + requestBody.get("target"));
+		log.info("emegercy_status : " + requestBody.get("emergency_status"));
+		log.info("checked_at : " + requestBody.get("checked_at"));
+		log.info("ad_more_chk : " + requestBody.get("ad_more_chk"));
+		log.info("rank_range : " + requestBody.get("rank_range"));
+		log.info("result_rank----------------------------------");
+		((ArrayList<HashMap<String, Object>>) requestBody.get("result_rank")).stream().forEach((v) -> log.info(v.get("rank") + " / " + v.get("title") + " / " + v.get("site")));;
 	}
 
 	@Override

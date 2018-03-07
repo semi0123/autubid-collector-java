@@ -99,7 +99,7 @@ public class CrawlingController {
 		
 		try{
 			crawlingService.runBidModule(requestBody);
-			crawlingService.sendCrawlingPostJsonString(requestBody);
+			crawlingService.crawledKeywordLog(requestBody);
 		}catch(Exception e){
 			e.printStackTrace();
 			log.error("Crawling Post Error!!!");
