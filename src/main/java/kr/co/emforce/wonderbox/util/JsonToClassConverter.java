@@ -15,7 +15,7 @@ public class JsonToClassConverter {
 		Method method = null;
 		Field[] fields = null;
 		fields = clz.getDeclaredFields();
-		Map<String, String> fTypeMap = new HashMap<String, String>();
+		Map<String, Object> fTypeMap = new HashMap<String, Object>();
 		for(Field field : fields){
 			fTypeMap.put(field.getName(), field.getType().getName());
 		}
@@ -31,7 +31,7 @@ public class JsonToClassConverter {
 			clazz = clz.newInstance();
 			while( keyIter.hasNext() ){
 				key = keyIter.next();
-				method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key)) );
+				method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key).toString()) );
 				method.invoke(clazz, json.get(key));
 			}
 			convertedList.add(clazz);
@@ -45,7 +45,7 @@ public class JsonToClassConverter {
 		Method method = null;
 		Field[] fields = null;
 		fields = clz.getDeclaredFields();
-		Map<String, String> fTypeMap = new HashMap<String, String>();
+		Map<String, Object> fTypeMap = new HashMap<String, Object>();
 		for(Field field : fields){
 			fTypeMap.put(field.getName(), field.getType().getName());
 		}
@@ -56,7 +56,7 @@ public class JsonToClassConverter {
 		T convertedObject = clz.newInstance();
 		while( keyIter.hasNext() ){
 			key = keyIter.next();
-			method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key)) );
+			method = clz.getDeclaredMethod("set" + key.substring(0,1).toUpperCase() + key.substring(1), Class.forName(fTypeMap.get(key).toString()) );
 			method.invoke(convertedObject, json.get(key));
 		}
 		

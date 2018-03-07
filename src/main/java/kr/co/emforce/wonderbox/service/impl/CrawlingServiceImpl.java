@@ -76,6 +76,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		String checked_at = requestBody.get("checked_at").toString();
 		String emergency_status = requestBody.get("emergency_status").toString();
 		Integer rank_range = Integer.valueOf(requestBody.get("rank_range").toString());// 통검 range
+		String ad_more_chk = requestBody.get("ad_more_chk").toString();
 		
 		String server_name = requestBody.get("server_name").toString();
 		Boolean isTest = server_name.toLowerCase().contains("test"); 
@@ -245,6 +246,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 				args.add(opp_rank == null ? "16" : opp_rank.toString());
 				args.add(bid_type);
 				args.add(is_resv);
+				args.add(ad_more_chk);
 				
 				log.info("IProcess.MODULES DIR BEFORE LOG");
 				log.info("IProcess.MODULES_DIR => " + IProcess.MODULES_DIR);
