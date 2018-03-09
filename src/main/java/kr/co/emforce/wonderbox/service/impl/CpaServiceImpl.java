@@ -125,7 +125,8 @@ public class CpaServiceImpl implements CpaService {
 				todayConv = Integer.parseInt(responseData.get("today_conv").toString());
 				
 				// 어제 그제 CPA
-				responseData = (Map<String, Object>) RestTemplateUtil.exchange(anStatsDNS + "/cpa/history/2days/", HttpMethod.GET, data).get("data");
+				data.put("day", 6);
+				responseData = (Map<String, Object>) RestTemplateUtil.exchange(anStatsDNS + "/cpa/history/days/", HttpMethod.GET, data).get("data");
 				twoDayCost = Integer.parseInt(responseData.get("cost").toString());
 				twoDayConv = Integer.parseInt(responseData.get("conv").toString());
 				
