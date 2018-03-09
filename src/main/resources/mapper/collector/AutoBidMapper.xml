@@ -270,8 +270,14 @@
 				 WHERE kwd_nm = #{kwd_nm}
 				       AND target = #{target}
 				       AND resv_status = 'Inactive'
-				       AND ((bid_status IN ( 'Active', 'OppActive') AND emergency_status = #{emergency_status}) 
-				       		OR (bid_status IN ( 'CpaActive') AND emergency_status = 'False_cpa'))) bfk,
+				       <choose>
+				        <when test="emergency_status != 'False_cpa'">
+					       AND (bid_status IN ( 'Active', 'OppActive') AND emergency_status = #{emergency_status})) bfk,
+				        </when>
+                <when test="emergency_status == 'False_cpa'">
+				       	 AND (bid_status IN ( 'CpaActive') AND emergency_status = 'False_cpa')) bfk,
+                </when>	       
+				       </choose>
 			       adv_infos ai,
 	           bid_favorites bf
 	     WHERE bf.id = bfk.bid_favorites_id 
