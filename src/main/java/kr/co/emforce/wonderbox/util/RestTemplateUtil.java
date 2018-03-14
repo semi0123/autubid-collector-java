@@ -45,7 +45,7 @@ public class RestTemplateUtil {
 	public static Map<String, Object> exchange(String url, HttpMethod method, String paramsStr, String token) throws JsonProcessingException{
 		Map<String, Object> params = new HashMap<String, Object>();
 		
-		if( paramsStr != null ){
+		if( paramsStr != null && !("".equals(paramsStr)) ){
 			if( paramsStr.endsWith("&") ){
 				paramsStr = paramsStr.substring(0, paramsStr.length()-1);
 			}
