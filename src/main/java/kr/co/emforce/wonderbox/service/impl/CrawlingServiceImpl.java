@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.emforce.wonderbox.dao.collector.AutoBidDao;
 import kr.co.emforce.wonderbox.model.collector.BidFavoriteKeyword;
-import kr.co.emforce.wonderbox.model.collector.BidInstance;
 import kr.co.emforce.wonderbox.model.collector.BidMachineMng;
 import kr.co.emforce.wonderbox.model.collector.CrawlingResult;
 import kr.co.emforce.wonderbox.module.IProcess;
@@ -373,36 +372,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	    pb.directory(new File(modPath));
 	    pb.start();
 	}	
-	
-	@Override
-	public void crash(String name) {
-		if( autoBidDao.updateCrash(name) == 1 ){
-			Map<String, Object> inputMap = new HashMap<String, Object>();
-			inputMap.put("name", name);
-			StringBuffer content = new StringBuffer();
-			content.append("\n\n* 해당 메일은 입찰 솔루션 오류 발생시 자동으로 발송되는 메일입니다.\n\n");
-			BidInstance instance = autoBidDao.selectBidInstance(name);
-			content.append(instance.getDesc()+"\n\n")
-				   .append("name : " + instance.getName() + "\n\n")
-				   .append("label : " + instance.getLabel() + "\n\n")
-				   .append("ip_v4 : " + instance.getIp_v4() + "\n\n");
-			SimpleMailMessage smm = new SimpleMailMessage();
-			smm.setFrom("jungyw@emforce.co.kr");
-			smm.setTo(new String[] {
-					"ahnjaemo@emforce.co.kr", 
-					"jungyw@emforce.co.kr", 
-					"gusfla09@emforce.co.kr",
-					"jamjameun@emforce.co.kr",
-					"kimnayoung@emforce.co.kr",
-					"yhj@emforce.co.kr"
-				});
-			smm.setSubject("자동입찰 솔루션 오류");
-			smm.setText(content.toString());
-			mailSender.send(smm);
-			log.info(name + " Crawling Error Send Mail");
-		}
-	}
-	
+
 	
 	@Override
 	public void vpnStatusCheck(Map<String, Object> requestBody) {
@@ -418,7 +388,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 			});
 		smm.setSubject("VPN 설정 오류");
 		StringBuffer content = new StringBuffer();
-		content.append("\n\n* 해당 메일은 Expressvpn 오류 발생시 자동으로 발송되는 메일입니다.\n\n")
+		content.append("\n\n* 해당 메일은 크롤링 서버의 VPN 해제로 인해, 서버 IP가 한국 IP가 아닌 경우 자동으로 발송되는 메일입니다.\n\n")
 			   .append("서버명 : " + requestBody.get("server_name") + "\n")
 			   .append("메시지 : " + requestBody.get("status_msg") + "\n")
 			   .append("체크시간 : " + requestBody.get("check_time") + "\n");

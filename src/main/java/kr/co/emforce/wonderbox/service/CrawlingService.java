@@ -14,8 +14,6 @@ public interface CrawlingService {
 	
 	public void crawledKeywordLog(Map<String, Object> requestBody);
 	
-	public void crash(String name);
-	
 	public int updateReRun(String processNum);
 	
 	public void vpnStatusCheck(Map<String, Object> requestBody);
