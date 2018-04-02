@@ -397,11 +397,4 @@ public class CrawlingServiceImpl implements CrawlingService{
 		log.info("VPN Error : " + requestBody.get("server_name") + " / " + requestBody.get("status_msg") + " / " + requestBody.get("check_time"));
 	}
 	
-	@Override
-	public int updateReRun(String processNum) {
-		if( "All".equals(processNum) ){
-			processNum = null;
-		}
-		return autoBidDao.updateReRun(processNum);
-	}
 }

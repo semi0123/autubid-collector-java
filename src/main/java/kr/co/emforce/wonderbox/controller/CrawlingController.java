@@ -107,23 +107,6 @@ public class CrawlingController {
 		}
 	}
 	
-	@RequestMapping(value="/crash/", method=RequestMethod.POST)
-	@ResponseBody
-	public void crash(@RequestBody Map<String, String> reqBody){
-		crawlingService.crash(reqBody.get("name"));
-		log.info("Server >>> " + reqBody.get("name") + " crash");
-	}
-	
-	@RequestMapping(value="/rerun/")
-	@ResponseBody
-	public Object reRun(
-			@RequestParam(value="process_num", required=true) String processNum,
-			HttpServletRequest request
-		){
-		log.info("IP " + request.getRemoteAddr() + " -> Rerun " + processNum + " Machine(s)");
-		return "Rerun machine num : " + crawlingService.updateReRun(processNum);
-	}
-	
 	@RequestMapping(value="/directRelocate/")
 	@ResponseBody
 	public Object directRelocate(HttpServletRequest request){

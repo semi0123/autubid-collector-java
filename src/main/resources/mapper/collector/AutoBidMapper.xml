@@ -154,19 +154,6 @@
 		  FROM bid_instances
 		 WHERE name = #{_parameter}
 	</select>
-		
-	<update id="updateReRun" parameterType="String">
-		UPDATE bid_machine_mngs
-		   SET status = 'Active',
-		   	   cur_crashed_at = NULL,
-		   	   updated_at = NOW(),
-		   	   cur_rerunned_at = NOW()
-		 WHERE process_num != 120
-			   <if test='_parameter != null'>
-			   AND process_num = #{_parameter}
-			   </if>
-	</update>
-	
 	
 	<select id="selectCrawlingRankKwdList" parameterType="Map" resultType="HashMap">
 	SELECT bfk.kwd_nm kwd_nm, 

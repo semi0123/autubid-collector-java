@@ -26,8 +26,6 @@ public interface AutoBidDao {
 	
 	public List<BidFavoriteKeyword> selectKeywordsInCrashedMachine(Integer processNum);
 	
-	public int updateReRun(String processNum);
-	
 	public BidInstance selectBidInstance(String name);
 	
 	
