@@ -453,7 +453,7 @@
 			   bfk.bid_status
 		  FROM bid_favorites bf,
 		       (SELECT kwd_id, kwd_nm, bid_favorites_id, goal_rank, max_bid_amt, site, emergency_status,rank, opp_gap, opp_site, resv_status, bid_status
-		          FROM bid_favorite_keywords) bfk,
+		          FROM bid_favorite_keywords WHERE resv_status = 'Inactive' AND bid_status NOT IN ('CpaActive', 'Inactive')) bfk,
 		       (SELECT na_account_ser, adv_id FROM adv_infos WHERE client_type = 'premium') ai
 		 WHERE bf.id = bfk.bid_favorites_id
 		       AND bf.advs_id = ai.adv_id
