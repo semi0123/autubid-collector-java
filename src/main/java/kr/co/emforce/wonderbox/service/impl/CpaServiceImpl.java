@@ -141,7 +141,7 @@ public class CpaServiceImpl implements CpaService {
 				responseData = RestTemplateUtil.exchange(anStatsDNS + "/cpa/history/", HttpMethod.POST, data);
 				if( responseData.get("success").equals(Boolean.TRUE) ){
 					// 2018-01-29 Cpa 계산 오류로 주석 처리
-					//autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(requestBody);
+					autoBidDao.updateCurCpaAmtOneBidFavoriteKeyword(data);
 					log.info("■■■■■■■■■■■■■■■■■ cpa run all keyword success");
 					log.info("kwd_id : " + bfk.getKwd_id() + " / kwd_nm : " + bfk.getKwd_nm() + " / cpa : " + calculatedCpa);
 				}else{
