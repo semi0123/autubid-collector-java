@@ -377,7 +377,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 	@Override
 	public void vpnStatusCheck(Map<String, Object> requestBody) {
 		SimpleMailMessage smm = new SimpleMailMessage();
-		smm.setFrom("ats.emforce@gmail.com");
+		smm.setFrom("neo@emforce.co.kr");
 		smm.setTo(new String[] {
 				"dev3@emfc.onmicrosoft.com"
 			});
