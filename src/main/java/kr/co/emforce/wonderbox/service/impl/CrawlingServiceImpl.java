@@ -337,8 +337,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 			while(true){
 				machineNum = bmmArr[random.nextInt(numOfMachine)];
 				curCapacity = processCapacity.get(machineNum);
-				// 프로세스넘버별 130개까지
-				if( kwd.get("process_num") != machineNum && curCapacity < 130){
+				// 프로세스넘버별 130개까지 -> 200개까지 
+				if( kwd.get("process_num") != machineNum && curCapacity < 200){
 					kwd.put("process_num", machineNum);
 					processCapacity.put(machineNum, curCapacity+1);
 					totalCount++;
