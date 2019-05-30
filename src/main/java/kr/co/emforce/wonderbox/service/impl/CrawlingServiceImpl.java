@@ -379,7 +379,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		SimpleMailMessage smm = new SimpleMailMessage();
 		smm.setFrom("neo@emforce.co.kr");
 		smm.setTo(new String[] {
-				"dev3@emfc.onmicrosoft.com"
+				"dev3@emforce.co.kr"
 			});
 		smm.setSubject("VPN 설정 오류");
 		StringBuffer content = new StringBuffer();
