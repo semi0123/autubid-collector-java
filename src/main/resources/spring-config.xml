@@ -114,7 +114,7 @@
 	<tx:annotation-driven proxy-target-class="true"/>
 	
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-    <property name="host" value="gw.emforce.co.kr" />
+    <property name="host" value="spam.emforce.co.kr" />
     <property name="port" value="25" />
     <property name="username" value="#{systemProperties['mail.username']}" />
     <property name="password" value="#{systemProperties['mail.password']}" />
