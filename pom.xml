@@ -10,19 +10,9 @@
 	
 	<profiles>
 		<profile>
-			<id>beta1</id>
+			<id>beta</id>
 			<properties>
 				<ftp.server>220.230.117.133</ftp.server>
-				<ftp.userid>a3tio</ftp.userid>
-				<ftp.password>em4s1905</ftp.password>
-				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>
-				<wasremotedir>/www/WAS/a3tio-ad-collector</wasremotedir>
-			</properties>
-		</profile>
-		<profile>
-			<id>beta2</id>
-			<properties>
-				<ftp.server>220.230.117.150</ftp.server>
 				<ftp.userid>a3tio</ftp.userid>
 				<ftp.password>em4s1905</ftp.password>
 				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>

@@ -118,23 +118,26 @@ public class CrawlingServiceImpl implements CrawlingService{
 			Integer opp_rank = null;
 			String is_resv = null;
 			
+			log.info("BidFavoriteKeyword 갯수 :: " + activeBfkList.size());
 			for(BidFavoriteKeyword bfk : activeBfkList){
 				joinSelectMap = new ObjectMapper().convertValue(bfk, Map.class);
 				is_resv = joinSelectMap.get("is_resv").toString();
 //				log.info(joinSelectMap);
-//				log.info("adv_id : " + joinSelectMap.get("adv_id"));
-//				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
-//				log.info("kwd_nm : " + kwd_nm);
-//				log.info("target : " + target);
-//				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
-//				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
-//				log.info("rank_range : " + crawlingMap.size());
-//				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
-//				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
-//				log.info("cur_rank 1: " + bfk.getRank());
-//				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
+				log.info("#### BidFavoriteKeyword 정보 확인 ####");
+				log.info("adv_id : " + joinSelectMap.get("adv_id"));
+				log.info("kwd_id : " + joinSelectMap.get("kwd_id"));
+				log.info("kwd_nm : " + kwd_nm);
+				log.info("target : " + target);
+				log.info("na_account_ser : " + joinSelectMap.get("na_account_ser"));
+				log.info("goal_rank : " + joinSelectMap.get("goal_rank"));
+				log.info("rank_range : " + crawlingMap.size());
+				log.info("max_bid_amt : " + joinSelectMap.get("max_bid_amt"));
+				log.info("emergency_status : " + joinSelectMap.get("emergency_status"));
+				log.info("cur_rank 1: " + bfk.getRank());
+				log.info("cur_rank 2: " + joinSelectMap.get("rank"));
 				
 				log.info("checked_at : " + checked_at);
+				log.info("#### BidFavoriteKeyword 정보 확인 ####");
 				String advId = String.valueOf(joinSelectMap.get("adv_id"));
 				String customerId = String.valueOf(joinSelectMap.get("na_account_ser"));
 				String kwdId = String.valueOf(joinSelectMap.get("kwd_id"));
@@ -261,6 +264,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 				
 				if( isTest == false ){
 					log.info("AUTO_BID_WORKER runModule Before");
+					// 19.03.28 베타 테스트를 위한 주석
+					// 19.05.03 베타테스트
 					runModule(IProcess.MODULES_DIR, IProcess.AUTO_BID_WORKER, args);
 					log.info("AUTO_BID_WORKER runModule END");
 				}else{
@@ -308,6 +313,7 @@ public class CrawlingServiceImpl implements CrawlingService{
 		log.info("rank_range : " + requestBody.get("rank_range"));
 		log.info("result_rank----------------------------------");
 		((ArrayList<HashMap<String, Object>>) requestBody.get("result_rank")).stream().forEach((v) -> log.info(v.get("rank") + " / " + v.get("title") + " / " + v.get("site")));;
+		
 	}
 
 	@Override
