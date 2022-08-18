@@ -311,8 +311,9 @@ public class CrawlingServiceImpl implements CrawlingService{
 		log.info("checked_at : " + requestBody.get("checked_at"));
 		log.info("ad_more_chk : " + requestBody.get("ad_more_chk"));
 		log.info("rank_range : " + requestBody.get("rank_range"));
-		log.info("result_rank----------------------------------");
-		((ArrayList<HashMap<String, Object>>) requestBody.get("result_rank")).stream().forEach((v) -> log.info(v.get("rank") + " / " + v.get("title") + " / " + v.get("site")));;
+//		2022-08-17 톰캣 catalina.out 로그 경량화를 위해 아래 result_rank 주석 처리
+//		log.info("result_rank----------------------------------");
+//		((ArrayList<HashMap<String, Object>>) requestBody.get("result_rank")).stream().forEach((v) -> log.info(v.get("rank") + " / " + v.get("title") + " / " + v.get("site")));;
 		
 	}
 
