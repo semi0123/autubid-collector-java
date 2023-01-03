@@ -23,7 +23,7 @@
 			<id>production1</id>
 			<properties>
 				<!-- <ftp.server>1.255.54.188</ftp.server> -->
-				<ftp.server>61.97.188.217</ftp.server>
+				<ftp.server>61.97.186.249</ftp.server>
 				<ftp.userid>a3tio</ftp.userid>
 				<ftp.password>em4s1905</ftp.password>
 				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>
@@ -34,7 +34,7 @@
 			<id>production2</id>
 			<properties>
 				<!-- <ftp.server>220.230.124.185</ftp.server> -->
-				<ftp.server>61.97.191.75</ftp.server>
+				<ftp.server>61.97.187.10</ftp.server>
 				<ftp.userid>a3tio</ftp.userid>
 				<ftp.password>em4s1905</ftp.password>
 				<webremotedir>/www/WEB/a3tio-ad-collector</webremotedir>
